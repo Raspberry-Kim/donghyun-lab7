@@ -1,5 +1,7 @@
 # 동현워 v0.1
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23793857.svg)](https://doi.org/10.5281/zenodo.23793857)
+
 동현랭으로 출전하는 중세 턴제 전술 게임이다.
 동현 시리즈의 여덟 번째 작은 실험이다.
 
