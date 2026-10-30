@@ -1,5 +1,5 @@
 /* 합성 효과음: 소리 파일 없이 Web Audio로 그 자리에서 만든다.
-   발소리·말발굽·바퀴·궤도·배·비행·점령 환호·상대 점령 알림·승리 딩동댕·패배 땡, 동현텐의 짧은 소리.
+   발소리·말발굽·바퀴·궤도·배·비행·점령 환호·상대 점령 알림·승리 딩동댕·패배 땡, 공격·반격·격파, 동현텐의 짧은 소리.
    브라우저 규칙에 따라 첫 클릭·터치·키 입력 뒤에 소리 장치를 연다. */
 var DHSFX=function(storeKey){
   'use strict';
@@ -64,6 +64,22 @@ var DHSFX=function(storeKey){
     bell:function(t,f,dur,peak){ tone(t,'sine',f,dur,peak,0.005); tone(t,'sine',f*2,dur*0.5,peak*0.3,0.005); tone(t,'sine',f*3.01,dur*0.25,peak*0.12,0.005); },
     win:function(t){ S.bell(t,523.25,0.5,0.5); S.bell(t+0.28,659.25,0.5,0.5); S.bell(t+0.56,783.99,1.2,0.55); },
     lose:function(t){ S.bell(t,196,1.3,0.55); tone(t,'sine',196*2.76,0.5,0.08,0.005); },
+    /* 공격·반격·격파 */
+    gun:function(t){ for(var i=0;i<2;i++){ noise(t+i*0.11,0.07,'bandpass',1800,0.8,0.8,0.002); var o=tone(t+i*0.11,'square',220,0.04,0.12,0.002); o.frequency.exponentialRampToValueAtTime(70,t+i*0.11+0.04); } },
+    mg:function(t){ for(var i=0;i<6;i++){ noise(t+i*0.065,0.04,'bandpass',2000,0.9,0.6,0.002); } },
+    cannon:function(t){ noise(t,0.45,'lowpass',700,0,1,0.003); var o=tone(t,'sine',120,0.35,0.8,0.003); o.frequency.exponentialRampToValueAtTime(38,t+0.35); },
+    shell:function(t){ var o=tone(t,'sine',1400,0.42,0.12,0.02); o.frequency.exponentialRampToValueAtTime(500,t+0.42); S.cannon(t+0.42); },
+    rocket:function(t){ var f=noise(t,0.35,'bandpass',900,1.2,0.5,0.01); f.frequency.exponentialRampToValueAtTime(3000,t+0.3); noise(t+0.32,0.4,'lowpass',900,0,0.8,0.003); var o=tone(t+0.32,'sine',90,0.3,0.6,0.003); o.frequency.exponentialRampToValueAtTime(40,t+0.62); },
+    bomb:function(t){ var o=tone(t,'sine',1800,0.5,0.1,0.02); o.frequency.exponentialRampToValueAtTime(350,t+0.5); S.explode(t+0.5); },
+    torpedo:function(t){ var f=noise(t,0.5,'bandpass',400,2,0.35,0.05); f.frequency.linearRampToValueAtTime(250,t+0.5); var o=tone(t+0.5,'sine',70,0.5,0.8,0.01); o.frequency.exponentialRampToValueAtTime(30,t+1); noise(t+0.5,0.5,'lowpass',300,0,0.6,0.01); },
+    flak:function(t){ for(var i=0;i<4;i++){ noise(t+i*0.09,0.08,'lowpass',1200,0,0.7,0.002); tone(t+i*0.09,'sine',150,0.06,0.35,0.002); } },
+    clash:function(t){ for(var i=0;i<2;i++){ var u=t+i*0.17; [1250,1870,2630].forEach(function(f){ tone(u,'square',f*(1+Math.random()*0.02),0.12,0.05,0.001); }); noise(u,0.05,'highpass',3000,0,0.4,0.001); tone(u,'sine',160,0.06,0.3,0.002); } },
+    arrow:function(t){ var o=tone(t,'triangle',190,0.08,0.3,0.002); o.frequency.exponentialRampToValueAtTime(110,t+0.08); var f=noise(t+0.03,0.25,'bandpass',2600,3,0.4,0.03); f.frequency.exponentialRampToValueAtTime(1200,t+0.28); noise(t+0.3,0.04,'lowpass',900,0,0.5,0.002); },
+    bang:function(t){ noise(t,0.25,'lowpass',1500,0,0.9,0.002); var o=tone(t,'sine',160,0.18,0.5,0.002); o.frequency.exponentialRampToValueAtTime(50,t+0.18); },
+    thud:function(t){ for(var i=0;i<2;i++){ var u=t+i*0.22, o=tone(u,'sine',85,0.2,0.9,0.003); o.frequency.exponentialRampToValueAtTime(40,u+0.2); noise(u,0.1,'lowpass',400,0,0.6,0.002); } },
+    catapult:function(t){ var o=tone(t,'triangle',260,0.15,0.2,0.01); o.frequency.linearRampToValueAtTime(420,t+0.15); var f=noise(t+0.12,0.35,'bandpass',600,1.5,0.35,0.05); f.frequency.linearRampToValueAtTime(1500,t+0.45); S.thud(t+0.5); },
+    explode:function(t){ noise(t,0.7,'lowpass',900,0,1,0.003); var o=tone(t,'sine',100,0.6,0.9,0.003); o.frequency.exponentialRampToValueAtTime(30,t+0.6); },
+    fall:function(t){ noise(t,0.18,'lowpass',500,0,0.6,0.004); var o=tone(t,'sine',140,0.25,0.5,0.004); o.frequency.exponentialRampToValueAtTime(55,t+0.25); },
     /* 동현텐: 고르기·짝·틀림·줄·판 비우기·Add·Hint·끝 */
     tick:function(t){ tone(t,'triangle',880,0.05,0.25,0.003); },
     pop:function(t){ var o=tone(t,'sine',520,0.12,0.45,0.004); o.frequency.exponentialRampToValueAtTime(1040,t+0.08); },
@@ -80,6 +96,6 @@ var DHSFX=function(storeKey){
     /* 유닛 이동: mt는 이동 방식, dur는 화면 이동 시간(초), copter는 헬기 여부 */
     move:function(mt,dur,copter){ if(!ready()) return; var t=ctx.currentTime+0.01, k=copter?'copter':MT[mt];
       if(k==='mech') S.foot(t,dur,true); else if(S[k]) S[k](t,dur); },
-    play:function(k){ if(!ready()||!S[k]) return; S[k](ctx.currentTime+0.01); }
+    play:function(k,delay){ if(!ready()||!S[k]) return; S[k](ctx.currentTime+0.01+(delay||0)); }
   };
 };
