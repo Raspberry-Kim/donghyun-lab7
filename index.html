@@ -253,6 +253,10 @@ footer a{color:var(--muted)}
 .slot-btn{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:baseline;text-align:left;min-height:40px;padding:8px 12px;font-size:var(--text-xs)}
 .slot-btn b{font-weight:700}.slot-btn small{grid-column:2;color:var(--muted)}
 .slot-btn:disabled{opacity:.55;cursor:default}
+.slot-row{display:grid;grid-template-columns:1fr auto;gap:6px}
+.slot-del{min-height:40px;padding:0 12px;font-size:var(--text-xs);color:var(--muted)}
+.slot-del.armed,.slot-del.armed:hover{color:#fff;background:var(--red);border-color:var(--red)}
+[data-theme=dark] .slot-del.armed{color:#191613}
 .slot-note{margin:8px 0 0;font-size:var(--text-xs);line-height:1.6;color:var(--muted)}.slot-note b{color:var(--ink);font-weight:600}
 .load-head label{cursor:pointer;border:1px solid var(--line);border-radius:6px;min-height:36px;padding:6px 12px;background:var(--paper);display:inline-flex;align-items:center;font:var(--text-xs) var(--body)}
 .load-head label:focus-within{outline:2px solid var(--accent);outline-offset:2px}
@@ -311,7 +315,7 @@ footer a{color:var(--muted)}
           <div class="sortie-card" id="sortie-card"></div>
           <p id="result" aria-live="polite">예제를 고른 뒤 출전을 눌러 보자. 지도·문명·선공·자원은 코드로만 정한다.</p>
           <div class="file-row"><button id="save">.dh 저장</button><label class="file-label">.dh 열기<input id="open" type="file" accept=".dh,.txt,text/plain" hidden></label></div>
-          <div class="load-box"><div class="load-head"><strong>저장한 판 불러오기</strong><label class="file-label" tabindex="0">파일에서 불러오기<input id="load-file-setup" type="file" accept=".dhsave,.json,application/json" hidden></label></div><div class="slot-list" id="slot-list"></div><p class="slot-note">브라우저 칸 3개는 이 기기의 이 브라우저에만 남는다. 다른 기기나 브라우저로는 옮겨지지 않고, 사이트 데이터를 지우거나 사생활 보호 창을 닫으면 사라진다. 오래 둘 판은 <b>.dhsave</b> 파일로 내려받아 두자.</p></div>
+          <div class="load-box"><div class="load-head"><strong>저장한 판 불러오기</strong><label class="file-label" tabindex="0">파일에서 불러오기<input id="load-file-setup" type="file" accept=".dhsave,.json,application/json" hidden></label></div><div class="slot-list" id="slot-list"></div><p class="slot-note">브라우저 칸 3개는 이 기기의 이 브라우저에만 남는다. 다른 기기나 브라우저로는 옮겨지지 않고, 사이트 데이터를 지우거나 사생활 보호 창을 닫으면 사라진다. Safari는 이 사이트를 7일 동안 열지 않으면 칸을 지울 수 있다. 오래 둘 판은 <b>.dhsave</b> 파일로 내려받아 두자. 필요 없는 칸은 <b>지우기</b>를 두 번 눌러 비운다.</p></div>
         </section>
         <section class="hud" id="hud" hidden>
           <div class="co-cards" id="co-cards"></div>
@@ -2008,6 +2012,7 @@ function slotNote(d){ if(!d) return '비어 있음'; const t=new Date(d.savedAt)
   return `${d.summary.mapName} · ${d.summary.day}일째 · ${t.getMonth()+1}/${t.getDate()} ${pad(t.getHours())}:${pad(t.getMinutes())}`; }
 function toast(t){ log(esc(t),0); status(t); }
 function saveToSlot(n){ try{ localStorage.setItem(SLOT_KEY(n),JSON.stringify(snapshot())); toast(`브라우저 칸 ${n}에 저장했다.`); } catch(e){ toast('브라우저 저장에 실패했다. 파일로 내려받아 저장하자.'); } }
+function deleteSlot(n){ try{ localStorage.removeItem(SLOT_KEY(n)); }catch(e){} }
 function saveToFile(){
   const d=snapshot(), a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));
@@ -2019,7 +2024,14 @@ function saveMenu(){
   for(let n=1;n<=SLOTS;n++){ const d=readSlot(n);
     items.push({label:`브라우저 칸 ${n}`,note:slotNote(d),fn:()=>{ if(d) confirmMenu(`칸 ${n}에 덮어쓸까?`,[['덮어쓴다',()=>saveToSlot(n)],['그만둔다',()=>{}]]); else { closeMenu(); mode='idle'; saveToSlot(n); hud(); } }}); }
   items.push({label:'파일로 내려받기',note:'.dhsave',fn:()=>{ closeMenu(); mode='idle'; saveToFile(); hud(); }});
+  items.push({label:'브라우저 칸 지우기',note:'',off:!Array.from({length:SLOTS},(_,i)=>readSlot(i+1)).some(Boolean),fn:()=>{ closeMenu(); deleteMenu(); }});
   mode='menu'; openMenu('저장',items,()=>{ mainMenu(); return false; });
+}
+function deleteMenu(){
+  const items=[];
+  for(let n=1;n<=SLOTS;n++){ const d=readSlot(n);
+    items.push({label:`브라우저 칸 ${n}`,note:slotNote(d),off:!d,fn:()=>confirmMenu(`칸 ${n}${n===2?"를":"을"} 지울까? 되돌릴 수 없다.`,[['지운다',()=>{ deleteSlot(n); toast(`브라우저 칸 ${n}${n===2?"를":"을"} 지웠다.`); }],['그만둔다',()=>{}]])}); }
+  mode='menu'; openMenu('지울 칸',items,()=>{ saveMenu(); return false; });
 }
 function loadFrom(d){ try{ restore(d); }catch(e){ const msg='불러오기 실패: '+e.message; if(S){ toast(msg); } else { result(msg,'error'); status('불러오기 실패','error'); } } }
 function loadMenu(){
@@ -2037,7 +2049,13 @@ function renderSlotList(){
   const box=$('#slot-list'); box.innerHTML='';
   for(let n=1;n<=SLOTS;n++){ const d=readSlot(n); const b=document.createElement('button'); b.className='slot-btn'; b.disabled=!d;
     b.innerHTML=`<b>칸 ${n}</b><span>${esc(slotNote(d))}</span>${d?`<small>${esc(d.summary.civ1)} 대 ${esc(d.summary.civ2)}</small>`:''}`;
-    b.onclick=()=>loadFrom(readSlot(n)); box.append(b); }
+    b.onclick=()=>loadFrom(readSlot(n));
+    const row=document.createElement('div'); row.className='slot-row'; row.append(b);
+    if(d){ const x=document.createElement('button'); x.className='slot-del'; x.type='button'; x.textContent='지우기'; x.setAttribute('aria-label',`칸 ${n} 지우기`);
+      let t=0; x.onclick=()=>{ if(!x.classList.contains('armed')){ x.classList.add('armed'); x.textContent='정말 지운다'; t=setTimeout(()=>{ x.classList.remove('armed'); x.textContent='지우기'; },4000); return; }
+        clearTimeout(t); deleteSlot(n); renderSlotList(); status(`브라우저 칸 ${n}${n===2?"를":"을"} 지웠다.`); };
+      row.append(x); }
+    box.append(row); }
 }
 function endTurnAsk(){
   closeMenu(); const n=E.readyUnits(S,1).length;

@@ -285,6 +285,7 @@ function slotNote(d){ if(!d) return '비어 있음'; const t=new Date(d.savedAt)
   return `${d.summary.mapName} · ${d.summary.day}일째 · ${t.getMonth()+1}/${t.getDate()} ${pad(t.getHours())}:${pad(t.getMinutes())}`; }
 function toast(t){ log(esc(t),0); status(t); }
 function saveToSlot(n){ try{ localStorage.setItem(SLOT_KEY(n),JSON.stringify(snapshot())); toast(`브라우저 칸 ${n}에 저장했다.`); } catch(e){ toast('브라우저 저장에 실패했다. 파일로 내려받아 저장하자.'); } }
+function deleteSlot(n){ try{ localStorage.removeItem(SLOT_KEY(n)); }catch(e){} }
 function saveToFile(){
   const d=snapshot(), a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));
@@ -296,7 +297,14 @@ function saveMenu(){
   for(let n=1;n<=SLOTS;n++){ const d=readSlot(n);
     items.push({label:`브라우저 칸 ${n}`,note:slotNote(d),fn:()=>{ if(d) confirmMenu(`칸 ${n}에 덮어쓸까?`,[['덮어쓴다',()=>saveToSlot(n)],['그만둔다',()=>{}]]); else { closeMenu(); mode='idle'; saveToSlot(n); hud(); } }}); }
   items.push({label:'파일로 내려받기',note:'.dhsave',fn:()=>{ closeMenu(); mode='idle'; saveToFile(); hud(); }});
+  items.push({label:'브라우저 칸 지우기',note:'',off:!Array.from({length:SLOTS},(_,i)=>readSlot(i+1)).some(Boolean),fn:()=>{ closeMenu(); deleteMenu(); }});
   mode='menu'; openMenu('저장',items,()=>{ mainMenu(); return false; });
+}
+function deleteMenu(){
+  const items=[];
+  for(let n=1;n<=SLOTS;n++){ const d=readSlot(n);
+    items.push({label:`브라우저 칸 ${n}`,note:slotNote(d),off:!d,fn:()=>confirmMenu(`칸 ${n}${n===2?"를":"을"} 지울까? 되돌릴 수 없다.`,[['지운다',()=>{ deleteSlot(n); toast(`브라우저 칸 ${n}${n===2?"를":"을"} 지웠다.`); }],['그만둔다',()=>{}]])}); }
+  mode='menu'; openMenu('지울 칸',items,()=>{ saveMenu(); return false; });
 }
 function loadFrom(d){ try{ restore(d); }catch(e){ const msg='불러오기 실패: '+e.message; if(S){ toast(msg); } else { result(msg,'error'); status('불러오기 실패','error'); } } }
 function loadMenu(){
@@ -314,7 +322,13 @@ function renderSlotList(){
   const box=$('#slot-list'); box.innerHTML='';
   for(let n=1;n<=SLOTS;n++){ const d=readSlot(n); const b=document.createElement('button'); b.className='slot-btn'; b.disabled=!d;
     b.innerHTML=`<b>칸 ${n}</b><span>${esc(slotNote(d))}</span>${d?`<small>${esc(d.summary.civ1)} 대 ${esc(d.summary.civ2)}</small>`:''}`;
-    b.onclick=()=>loadFrom(readSlot(n)); box.append(b); }
+    b.onclick=()=>loadFrom(readSlot(n));
+    const row=document.createElement('div'); row.className='slot-row'; row.append(b);
+    if(d){ const x=document.createElement('button'); x.className='slot-del'; x.type='button'; x.textContent='지우기'; x.setAttribute('aria-label',`칸 ${n} 지우기`);
+      let t=0; x.onclick=()=>{ if(!x.classList.contains('armed')){ x.classList.add('armed'); x.textContent='정말 지운다'; t=setTimeout(()=>{ x.classList.remove('armed'); x.textContent='지우기'; },4000); return; }
+        clearTimeout(t); deleteSlot(n); renderSlotList(); status(`브라우저 칸 ${n}${n===2?"를":"을"} 지웠다.`); };
+      row.append(x); }
+    box.append(row); }
 }
 function endTurnAsk(){
   closeMenu(); const n=E.readyUnits(S,1).length;
