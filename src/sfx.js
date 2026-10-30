@@ -12,10 +12,15 @@ var DHSFX=function(storeKey){
       var comp=ctx.createDynamicsCompressor(); master.connect(comp); comp.connect(ctx.destination);
       var n=ctx.sampleRate, b=ctx.createBuffer(1,n,n), d=b.getChannelData(0);
       for(var i=0;i<n;i++) d[i]=Math.random()*2-1; noiseBuf=b; }
-    if(ctx.state==='suspended') ctx.resume();
+    if(ctx.state!=='running'){
+      try{ var r=ctx.resume(); if(r&&r.catch) r.catch(function(){}); }catch(e){}
+      /* 옛 iOS Safari: 손짓 안에서 빈 소리를 한 번 틀어야 소리 장치가 열린다 */
+      try{ var sb=ctx.createBufferSource(); sb.buffer=ctx.createBuffer(1,1,22050); sb.connect(ctx.destination); sb.start(0); }catch(e){}
+    }
   }
-  ['pointerdown','keydown','touchstart'].forEach(function(ev){ document.addEventListener(ev,unlock,{capture:true,passive:true}); });
-  function ready(){ return on&&ctx&&ctx.state==='running'; }
+  /* 휴대폰은 손가락을 뗄 때(touchend·click)만 소리를 허락하므로 그 이벤트도 함께 듣는다 */
+  ['touchend','click','pointerup','mousedown','keydown','touchstart','pointerdown'].forEach(function(ev){ document.addEventListener(ev,unlock,{capture:true,passive:true}); });
+  function ready(){ return on&&ctx&&ctx.state!=='closed'; }
   function env(g,t,a,peak,dec){ g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(peak,t+a); g.gain.exponentialRampToValueAtTime(0.0001,t+a+dec); }
   function noise(t,dur,type,freq,q,peak,a,out){
     var s=ctx.createBufferSource(); s.buffer=noiseBuf; s.loop=true;
