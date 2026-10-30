@@ -12,7 +12,7 @@
 <body>
 <header class="header">
   <a class="brand" href="#" aria-label="동현워 첫 화면으로"><span class="brand-main"><img class="brand-icon" src="__BRAND_ICON__" alt="" width="96" height="96">동현<span>워</span><sup>TM</sup></span><i class="brand-divider"></i><span class="brand-sub">MEDIEVAL TACTICS<small>코드로 출전하는 중세 전장의 전술</small></span></a><a class="doi-badge" href="https://doi.org/10.5281/zenodo.23793857" target="_blank" rel="noopener" aria-label="동현워 Zenodo DOI 10.5281/zenodo.23793857" title="Zenodo DOI (모든 버전)"><b>DOI</b><span>10.5281/zenodo.23793857</span></a>
-  <div class="edition">v0.1<button id="theme" class="icon-btn" aria-label="밝은 화면과 어두운 화면 전환" title="화면 전환" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div>
+  <div class="edition">v0.1<button id="sound" class="icon-btn" aria-label="효과음 켜기·끄기" title="효과음 (M)" aria-pressed="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="snd-on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="snd-off" d="m16 9 6 6m0-6-6 6"/></svg></button><button id="theme" class="icon-btn" aria-label="밝은 화면과 어두운 화면 전환" title="화면 전환" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div>
 </header>
 <main>
 <!-- SERIES-NAV-START -->
@@ -61,7 +61,7 @@
           <div class="co-cards" id="co-cards"></div>
           <div class="info-card" id="info-card"></div>
           <div class="log-card"><div class="section-title"><h2><span>C</span> 전투 기록</h2><button id="concede" class="small-btn">항복하고 출전 준비로</button></div><ol id="log"></ol></div><input id="load-file" type="file" accept=".dhsave,.json,application/json" hidden>
-          <div class="keys"><span><kbd>←↑↓→</kbd>커서</span><span><kbd>X</kbd>확인</span><span><kbd>Z</kbd>취소</span><span><kbd>S</kbd>다음 유닛</span><span><kbd>A</kbd>정보</span><span><kbd>Shift</kbd>사거리</span><span><kbd>Enter</kbd>메뉴·턴 종료</span></div>
+          <div class="keys"><span><kbd>←↑↓→</kbd>커서</span><span><kbd>X</kbd>확인</span><span><kbd>Z</kbd>취소</span><span><kbd>S</kbd>다음 유닛</span><span><kbd>A</kbd>정보</span><span><kbd>Shift</kbd>사거리</span><span><kbd>Enter</kbd>메뉴·턴 종료</span><span><kbd>M</kbd>효과음</span></div>
         </section>
       </div>
     </div>
@@ -99,6 +99,7 @@
       <tr><td><kbd>S</kbd></td><td>아직 움직이지 않은 다음 유닛으로</td></tr>
       <tr><td><kbd>A</kbd></td><td>커서 아래 유닛의 능력 정보</td></tr>
       <tr><td><kbd>Shift</kbd></td><td>누르고 있는 동안 커서 아래 유닛의 공격 범위</td></tr>
+      <tr><td><kbd>M</kbd></td><td>효과음 켜기·끄기(머리말 스피커 단추와 같다)</td></tr>
       <tr><td><kbd>Enter</kbd></td><td>메뉴: 턴 종료 · 저장 · 불러오기 · 항복</td></tr>
     </tbody></table></div>
     <div><h3>규칙 요약</h3><ul>

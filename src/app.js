@@ -14,6 +14,10 @@ const rngText=r=>r?(r[0]===r[1]?String(r[0]):r.join('~')):'—';
 
 /* ---------- 화면 전환과 탭 ---------- */
 $('#theme').onclick=()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'light';$('#theme').setAttribute('aria-pressed',String(dark));};
+const SND=DHSFX('donghyun-war:sound'); let sndOver=null;
+function sndUI(){ const b=$('#sound'); b.setAttribute('aria-pressed',String(SND.on)); b.classList.toggle('muted',!SND.on); b.title=SND.on?'효과음 켬 (M)':'효과음 끔 (M)'; }
+$('#sound').onclick=()=>{ SND.set(!SND.on); sndUI(); }; sndUI();
+document.addEventListener('keydown',e=>{ if(e.code!=='KeyM'||e.metaKey||e.ctrlKey||e.altKey) return; const el=document.activeElement; if(el&&(el.tagName==='TEXTAREA'||el.tagName==='SELECT'||el.tagName==='INPUT')) return; SND.set(!SND.on); sndUI(); if(S) status(SND.on?'효과음 켬':'효과음 끔'); });
 let tab='play';
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{
   tab=b.dataset.tab;
@@ -164,6 +168,7 @@ function finishCheck(){
   if(!S||!S.winner) return false;
   processEvents(); mode='over'; closeMenu(); hud();
   const win=S.winner===1, P=S.players;
+  if(sndOver!==S){ sndOver=S; SND.play(win?'win':'lose'); }
   const card=$('#result-card');
   card.innerHTML=`<div><h3>${win?'승리':'패배'}</h3><p>${S.day}일째 · ${esc(S.reason)}${win?' · 붉은 진영이 이겼다.':' · 푸른 진영이 이겼다.'}</p>
   <dl><dt></dt><dt>나</dt><dt>CPU</dt><dt>만든 유닛</dt><dd>${P[1].built}</dd><dd>${P[2].built}</dd><dt>무찌른 유닛</dt><dd>${P[1].kills}</dd><dd>${P[2].kills}</dd><dt>개종시킨 유닛</dt><dd>${P[1].converted}</dd><dd>${P[2].converted}</dd><dt>잃은 유닛</dt><dd>${P[1].lost}</dd><dd>${P[2].lost}</dd><dt>건물</dt><dd>${E.buildingsOf(S,1)}</dd><dd>${E.buildingsOf(S,2)}</dd></dl>
@@ -187,7 +192,7 @@ function processEvents(){
     else if(e.k==='hitb'){ log(`<b>${UN(e.at)}</b> → ${side(e.bo)}의 ${BN(e.bt)} ${e.dmg}`,e.ao); ui.fx.push({k:'hit',x:e.dx,y:e.dy,t0:now,dur:420},{k:'num',x:e.dx,y:e.dy,t0:now,dur:900,text:'-'+e.dmg,col:'#ffe27a'}); }
     else if(e.k==='ruin'){ log(`${side(e.owner)}의 <b>${BN(e.bt)}</b> 무너짐${e.bt==='tc'?'':' · 중립이 되었다'}`,e.by); ui.fx.push({k:'boom',x:e.x,y:e.y,t0:now+120,dur:650}); }
     else if(e.k==='destroy'){ log(`${side(e.owner)}의 <b>${UN(e.type)}</b> 쓰러짐`,3-e.owner); ui.fx.push({k:'boom',x:e.x,y:e.y,t0:now+120,dur:650}); }
-    else if(e.k==='capture'){ log(e.done?`<b>${UN(e.type)}</b> ${BN(e.bt)} 점령 완료`:`<b>${UN(e.type)}</b> ${BN(e.bt)} 점령 중 · 남은 ${e.left}`,e.owner); }
+    else if(e.k==='capture'){ log(e.done?`<b>${UN(e.type)}</b> ${BN(e.bt)} 점령 완료`:`<b>${UN(e.type)}</b> ${BN(e.bt)} 점령 중 · 남은 ${e.left}`,e.owner); if(e.done&&!S.winner) SND.play(e.owner===1?'cheer':'alert'); }
     else if(e.k==='build'){ log(`<b>${UN(e.type)}</b> 생산`,e.owner); }
     else if(e.k==='heal'){ log(`<b>${UN(e.type)}</b> ${UN(e.tt)} 치유 +${e.add}`,e.owner); ui.fx.push({k:'glow',x:e.x,y:e.y,t0:now,dur:700,rgb:'140,240,150'},{k:'num',x:e.x,y:e.y,t0:now,dur:900,text:'+'+e.add,col:'#a8f5b0'}); }
     else if(e.k==='convert'){ log(`<b>${UN('monk')}</b> ${UN(e.tt)} 개종 ${e.ok?'성공':'실패'} (${e.pct}%)`,e.owner); ui.fx.push({k:'glow',x:e.x,y:e.y,t0:now,dur:800,rgb:e.ok?'255,236,140':'200,200,200'},{k:'num',x:e.x,y:e.y,t0:now,dur:900,text:e.ok?'개종':'실패',col:e.ok?'#ffe27a':'#ddd'}); }
@@ -366,7 +371,7 @@ async function moveTo(){
   const [x,y]=ui.cursor; if(!reachR.dist.has(E.key(x,y))||!E.stopOK(S,sel,x,y)) return;
   const path=E.pathTo(reachR,orig.x,orig.y,x,y);
   busy=true; ui.moveSet=null; ui.path=null;
-  if(path.length>1){ ui.anim={id:sel.id,path,t0:performance.now(),dur:(reduced?20:70)*(path.length-1)}; await sleep(ui.anim.dur); ui.anim=null; }
+  if(path.length>1){ ui.anim={id:sel.id,path,t0:performance.now(),dur:(reduced?20:70)*(path.length-1)}; const ud=UNITS[sel.type]; SND.move(ud.mt,ui.anim.dur/1000,ud.cls==='copter'); await sleep(ui.anim.dur); ui.anim=null; }
   sel.x=x; sel.y=y; busy=false; actionMenu();
 }
 function actionMenu(){
