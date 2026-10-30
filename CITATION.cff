@@ -1,0 +1,49 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "Donghyunwar (동현워): a single-player medieval turn-based tactics laboratory against the computer, set up through the esoteric language Donghyun-lang"
+type: software
+version: "0.1"
+date-released: "2026-10-30"
+authors:
+  - family-names: Kim
+    given-names: Dong Hyun
+    orcid: "https://orcid.org/0000-0001-9883-0229"
+    affiliation: "Inha University College of Medicine"
+license: MIT
+repository-code: "https://github.com/Raspberry-Kim/donghyun-lab7"
+url: "https://raspberry-kim.github.io/donghyun-lab7/"
+abstract: >-
+  Donghyunwar is a browser-based, noncommercial medieval turn-based tactics
+  laboratory for one player against a computer opponent (Imperial Age with
+  all technologies researched, no fog of war). The map, civilizations, first
+  move, starting resources and seed are chosen only through programs written
+  in the esoteric programming language Donghyun-lang; the battle itself is
+  played with the keyboard or on-screen buttons. It includes five
+  civilizations, 27 unit types plus five heroes, six original maps, building
+  income and production, monks that heal and convert, market mercenaries, an
+  approximate damage formula, a heuristic computer opponent, and saving and
+  loading. Its rule framework and unit names and numbers follow the Nintendo
+  DS game Age of Empires: The Age of Kings (2006); it contains none of that
+  game's graphics, sound, maps or text. Age of Empires is a trademark of
+  Microsoft Corporation; this work is not affiliated with or endorsed by
+  Microsoft, Majesco or Backbone Entertainment. The MIT license applies to the
+  application code, documentation and artwork only; the fonts are under the
+  SIL Open Font License. See LICENSE and CREDITS.md.
+keywords:
+  - turn-based tactics
+  - strategy game
+  - game AI
+  - pixel art
+  - esoteric programming language
+  - JavaScript
+references:
+  - type: software
+    title: "Donghyun-lang (동현랭): a Korean esoteric programming language with a browser playground"
+    authors:
+      - family-names: Kim
+        given-names: Dong Hyun
+        orcid: "https://orcid.org/0000-0001-9883-0229"
+        affiliation: "Inha University College of Medicine"
+    version: "1.53"
+    license: MIT
+    repository-code: "https://github.com/Raspberry-Kim/donghyun-lang"

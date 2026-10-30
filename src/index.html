@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="동현랭으로 출전하는 중세 턴제 전술 게임이다.">
+  <title>동현워™ · 동현랭으로 출전하는 중세 전술 게임</title>
+  <link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="./favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="#" aria-label="동현워 첫 화면으로"><span class="brand-main"><img class="brand-icon" src="__BRAND_ICON__" alt="" width="96" height="96">동현<span>워</span><sup>TM</sup></span><i class="brand-divider"></i><span class="brand-sub">MEDIEVAL TACTICS<small>코드로 출전하는 중세 전장의 전술</small></span></a>
+  <div class="edition">v0.1<button id="theme" class="icon-btn" aria-label="밝은 화면과 어두운 화면 전환" title="화면 전환" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div>
+</header>
+<main>
+<!-- SERIES-NAV-START -->
+<nav class="series-strip" aria-label="동현 프로젝트 이동"><p class="series-context"><strong>동현의 작은 실험들</strong>하나의 언어, 일곱 개의 작은 세계</p><div class="series-links"><a class="series-item" data-series="lang" href="https://raspberry-kim.github.io/donghyun-lang/" aria-label="동현랭™ 언어 플레이그라운드로 이동"><span class="series-name">동현랭<sup>™</sup></span><span class="series-note">언어</span></a><a class="series-item" data-series="fly" href="https://raspberry-kim.github.io/donghyun-lab1/" aria-label="동현초™ 초파리 회로실험실로 이동"><span class="series-name">동현초<sup>™</sup></span><span class="series-note">초파리</span></a><a class="series-item" data-series="worm" href="https://raspberry-kim.github.io/donghyun-lab2/" aria-label="동현파™ 선충 회로실험실로 이동"><span class="series-name">동현파<sup>™</sup></span><span class="series-note">선충</span></a><a class="series-item" data-series="village" href="https://raspberry-kim.github.io/donghyun-lab3/" aria-label="동현빌™ 마을 유행 실험실로 이동"><span class="series-name">동현빌<sup>™</sup></span><span class="series-note">마을</span></a><a class="series-item" data-series="tactics" href="https://raspberry-kim.github.io/donghyun-lab4/" aria-label="동현전™ 전술 실험실로 이동"><span class="series-name">동현전<sup>™</sup></span><span class="series-note">전략</span></a><a class="series-item" data-series="copter" href="https://raspberry-kim.github.io/donghyun-lab5/" aria-label="동현콥™ 원버튼 비행 실험실로 이동"><span class="series-name">동현콥<sup>™</sup></span><span class="series-note">비행</span></a><a class="series-item" data-series="ten" href="https://raspberry-kim.github.io/donghyun-lab6/" aria-label="동현텐™ 숫자 짝 실험실로 이동"><span class="series-name">동현텐<sup>™</sup></span><span class="series-note">숫자</span></a><span class="series-item is-current" data-series="war" aria-current="page"><span class="series-name">동현워<sup>™</sup></span><span class="series-note">중세 · 지금 여기</span></span></div></nav>
+<!-- SERIES-NAV-END -->
+  <section class="intro">
+    <div><div class="eyebrow">MEDIEVAL TACTICS × ESOTERIC LANGUAGE</div><h1>중세 전술 실험실: <span class="title-brand">동현<span>워</span><sup>TM</sup></span></h1><p><strong>동현랭</strong>으로 출전하는 중세 턴제 전술 게임이다. 모든 연구를 마친 제국 시대에서 시작한다.</p></div>
+    <div class="model-stamp"><strong>1 <span>대</span> CPU</strong><strong>5 <span>문명</span></strong><small>병종 27 · 영웅 5 · 지도 6 · 안개 없음</small></div>
+  </section>
+  <nav class="tabs" aria-label="동현워 메뉴"><button class="active" data-tab="play" aria-current="page">전장</button><button data-tab="protocol">동현워 출전 규약</button><button data-tab="rules">규칙과 병종</button><button data-tab="about">모델과 출처</button><span>출전은 동현랭으로, 전투는 키보드로</span></nav>
+  <div class="getting-started"><p><strong>처음이라면?</strong> 예제를 고르고 <b>출전</b>을 눌러 보자. 지도·문명·선공·시작 자원은 모두 <b>동현랭</b> 명령으로만 정한다.</p><a href="https://raspberry-kim.github.io/donghyun-lang/" target="_blank" rel="noopener">동현랭 배우기 · 실행기 ↗</a></div>
+
+  <section id="tab-play" class="tab-panel">
+    <div class="play-grid" id="play-grid">
+      <div class="field-col">
+        <div class="section-title"><h2><span>A</span> 전장</h2><span id="status" role="status">출전 준비</span></div>
+        <div class="board-wrap" id="board-wrap" tabindex="0" aria-label="동현워 전장. 방향키로 커서를 옮기고 X로 고른다.">
+          <div class="board-top"><span id="day">출전 준비</span><span id="turn-badge"></span></div>
+          <div class="board-stage"><canvas id="board" width="288" height="196" role="img" aria-label="동현워 지도와 유닛"></canvas>
+            <div id="menu" class="game-menu" hidden role="menu"></div>
+            <div id="banner" class="banner" hidden></div>
+            <div id="result-card" class="result-card" hidden></div>
+          </div>
+          <div class="board-bottom"><span id="tile-info">지도를 미리 보고 있다.</span><span id="hint">X 확인 · Z 취소 · Enter 메뉴</span></div>
+        </div>
+        <div class="touchpad" id="touchpad" aria-label="화면 조작 단추">
+          <div class="dpad"><button data-key="ArrowUp" aria-label="위">▲</button><button data-key="ArrowLeft" aria-label="왼쪽">◀</button><button data-key="ArrowDown" aria-label="아래">▼</button><button data-key="ArrowRight" aria-label="오른쪽">▶</button></div>
+          <div class="pad-keys"><button data-key="x">X<small>확인</small></button><button data-key="z">Z<small>취소</small></button><button data-key="s">S<small>다음</small></button><button data-key="a">A<small>정보</small></button><button data-key="Enter">↵<small>메뉴</small></button></div>
+        </div>
+      </div>
+      <div class="side-col">
+        <section class="setup-panel" id="setup-panel">
+          <div class="section-title"><h2><span>B</span> 동현랭 출전 코드</h2><span>sortie.dh</span></div>
+          <div class="dh-panel">
+            <div class="dh-head"><select id="example" aria-label="동현랭 출전 예제 선택"></select><span class="dh-spacer"></span><button id="run" class="dh-btn dh-run" title="Ctrl/⌘ + Enter"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"></path></svg>출전 <kbd>⌘↵</kbd></button></div>
+            <div class="code-wrap"><div id="lines" aria-hidden="true"></div><textarea id="code" aria-label="동현랭 출전 코드" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea></div>
+            <div class="code-meta dh-status"><span id="line-count"></span><span>정수 출력 → 출전 명령 · ⌘/Ctrl ↵ 실행</span></div>
+          </div>
+          <p id="example-note"></p>
+          <div class="sortie-card" id="sortie-card"></div>
+          <p id="result" aria-live="polite">예제를 고른 뒤 출전을 눌러 보자. 지도·문명·선공·자원은 코드로만 정한다.</p>
+          <div class="file-row"><button id="save">.dh 저장</button><label class="file-label">.dh 열기<input id="open" type="file" accept=".dh,.txt,text/plain" hidden></label></div>
+          <div class="load-box"><div class="load-head"><strong>저장한 판 불러오기</strong><label class="file-label" tabindex="0">파일에서 불러오기<input id="load-file-setup" type="file" accept=".dhsave,.json,application/json" hidden></label></div><div class="slot-list" id="slot-list"></div></div>
+        </section>
+        <section class="hud" id="hud" hidden>
+          <div class="co-cards" id="co-cards"></div>
+          <div class="info-card" id="info-card"></div>
+          <div class="log-card"><div class="section-title"><h2><span>C</span> 전투 기록</h2><button id="concede" class="small-btn">항복하고 출전 준비로</button></div><ol id="log"></ol></div><input id="load-file" type="file" accept=".dhsave,.json,application/json" hidden>
+          <div class="keys"><span><kbd>←↑↓→</kbd>커서</span><span><kbd>X</kbd>확인</span><span><kbd>Z</kbd>취소</span><span><kbd>S</kbd>다음 유닛</span><span><kbd>A</kbd>정보</span><span><kbd>Shift</kbd>사거리</span><span><kbd>Enter</kbd>메뉴·턴 종료</span></div>
+        </section>
+      </div>
+    </div>
+    <div class="workflow"><span>동현랭 코드</span><b>→</b><span>지도·문명·선공·자원</span><b>→</b><span>출전</span><b>→</b><span>키보드 지휘</span><b>→</b><span>승리 · 항복</span></div>
+  </section>
+
+  <section id="tab-protocol" class="tab-panel document" hidden>
+    <div class="doc-heading"><div class="eyebrow">SORTIE I/O · v0.1</div><h2>출전은 동현랭으로, 전투는 키보드로.</h2><p>동현랭 프로그램이 출력한 정수를 차례로 읽는다. 명령 번호 하나 뒤에 값 하나가 온다. 마지막에 <code>6</code>을 출력해야 전장에 나간다. 전투가 시작된 뒤에는 동현랭을 쓰지 않는다.</p></div>
+    <div class="table-wrap"><table><thead><tr><th>명령</th><th>하는 일</th><th>값</th><th>기본값</th></tr></thead><tbody>
+      <tr><td>1</td><td>지도</td><td>1 첫 마을 · 2 강 건너 · 3 사막 오아시스 · 4 산맥 고개 · 5 늪과 숲 · 6 대평원</td><td>1</td></tr>
+      <tr><td>2</td><td>나의 문명</td><td>1 브리튼 · 2 프랑크 · 3 몽골 · 4 사라센 · 5 일본</td><td>1</td></tr>
+      <tr><td>3</td><td>CPU 문명</td><td>1~5 (같은 문명끼리도 된다)</td><td>2</td></tr>
+      <tr><td>4</td><td>선공</td><td>1 내가 먼저 · 2 CPU가 먼저</td><td>1</td></tr>
+      <tr><td>5</td><td>시작 자원</td><td>0~3000 · 100 단위 · 식량과 금에 같은 양 · 양쪽 같은 양</td><td>500</td></tr>
+      <tr><td>7</td><td>난수 시드</td><td>1~2147483646 · 같은 시드는 같은 운(피해 운 · 개종 · 시장 용병)</td><td>매번 새로</td></tr>
+      <tr><td>6</td><td>출전</td><td>값 없음 · 반드시 마지막에</td><td>—</td></tr>
+    </tbody></table></div>
+    <div class="doc-columns"><div><h3>고정된 조건</h3><p>모든 판은 제국 시대에서 시작하고, 연구는 모두 끝난 것으로 본다. 그래서 병종은 정예·최종 단계의 수치를 쓴다. CPU 난이도는 하나, 전장의 안개는 없다. 사람 한 명과 CPU 한 명만 겨룬다.</p><p>같은 명령을 여러 번 출력하면 마지막 값이 쓰인다. 범위를 벗어난 값, 짝이 없는 명령, 6 뒤의 출력은 오류로 알려 주고 전장에 나가지 않는다.</p></div>
+    <div><h3>예시</h3><pre class="code-example">나는 동현이냐?
+  ㅋㅋ 지도 3 · 사막 오아시스
+  뿡뿡 도옹~뿡뿡뿡~뿡뿡 도오옹~뿡뿡뿡
+  ㅋㅋ 나의 문명 4 · 사라센
+  뿡뿡 도오옹~뿡뿡뿡~뿡뿡 도오오옹~뿡뿡뿡
+  ㅋㅋ 출전
+  뿡뿡 도오오오오오옹~뿡뿡뿡
+동현이구나</pre><p>동현랭 문법은 <a href="https://raspberry-kim.github.io/donghyun-lang/" target="_blank" rel="noopener">동현랭 플레이그라운드</a>에서 배울 수 있다.</p></div></div>
+  </section>
+
+  <section id="tab-rules" class="tab-panel document" hidden>
+    <div class="doc-heading"><div class="eyebrow">HOW TO PLAY</div><h2>상대 마을회관을 점령하거나 무너뜨리면 이긴다.</h2><p>차례가 올 때마다 내 건물에서 식량과 금이 들어온다. 생산 건물에서 유닛을 만들고, 보병으로 중립·적 건물을 점령해 수입을 늘린다. 영웅 능력이나 경험치 같은 성장 요소는 없는 단순한 전술 전투다.</p></div>
+    <div class="doc-columns"><div><h3>키보드</h3><table class="key-table"><tbody>
+      <tr><td><kbd>←↑↓→</kbd></td><td>커서 이동, 메뉴 고르기, 대상 바꾸기</td></tr>
+      <tr><td><kbd>X</kbd></td><td>유닛 선택 · 이동 확정 · 명령 실행 · 생산</td></tr>
+      <tr><td><kbd>Z</kbd></td><td>취소 · 한 단계 뒤로. CPU 차례에는 빨리 감기</td></tr>
+      <tr><td><kbd>S</kbd></td><td>아직 움직이지 않은 다음 유닛으로</td></tr>
+      <tr><td><kbd>A</kbd></td><td>커서 아래 유닛의 능력 정보</td></tr>
+      <tr><td><kbd>Shift</kbd></td><td>누르고 있는 동안 커서 아래 유닛의 공격 범위</td></tr>
+      <tr><td><kbd>Enter</kbd></td><td>메뉴: 턴 종료 · 저장 · 불러오기 · 항복</td></tr>
+    </tbody></table></div>
+    <div><h3>규칙 요약</h3><ul>
+      <li>체력: 모든 유닛은 체력 100으로 시작한다. 지도에는 10으로 나눈 값(올림)을 작게 적는다.</li>
+      <li>수입: 마을회관 식량 25·금 25, 방앗간과 농장 식량 65씩, 광산 금 245. 다친 건물은 체력만큼 덜 낸다.</li>
+      <li>인구 한도: (식량 수입 + 금 수입) ÷ 100, 올림. 건물을 잃으면 더 만들 수 없다.</li>
+      <li>피해(근사식): 50 × (공격 ÷ 방어) × 운 0.9~1.1. 공격은 체력에 비례해 줄고, 방어는 서 있는 칸의 지형·건물 보너스만큼 는다. 건물을 칠 때는 35 × (공격 ÷ 건물 방어).</li>
+      <li>상성: 보병은 공성·건물에 +33%. 기병은 보병·원거리·수도사에 +33%, 건물에 −50%. 원거리는 건물에 −50%. 공성은 건물에 +50%.</li>
+      <li>반격: 맞은 유닛은 공격한 유닛이 자기 사거리 안에 있으면 반격한다. 공성 무기와 수도사는 반격하지 않는다. 선제공격 유닛은 먼저 친다.</li>
+      <li>점령: 점령값 20(건물 체력에 비례). 점령할 수 있는 보병이 자기 표시 체력만큼 줄인다. 마을 사람은 두 배.</li>
+      <li>회복: 내 건물 위에서 차례를 시작한 유닛은 체력 +20. 내 건물은 차례마다 +10씩 고쳐진다.</li>
+      <li>수도사: 이웃 아군(공성 무기 제외)을 +30 치유하거나, 1~2칸의 적을 개종한다. 확률 40% × 수도사 체력(두 칸이면 절반). 영웅과 고유 병종은 개종하지 않는다.</li>
+      <li>용병: 시장에서 날마다 여섯 가지 중 세 가지가 나온다. 가격은 25% 할인된 값이다. 성유물은 없다.</li>
+      <li>영웅: 문명마다 한 명이 마을회관 곁에서 시작한다. 특별한 능력 없이 강한 일반 유닛이며, 쓰러지면 다시 만들 수 없다.</li>
+    </ul></div></div>
+    <h3>문명</h3>
+    <div class="co-grid" id="civ-grid"></div>
+    <h3>병종표</h3>
+    <div class="table-wrap"><table id="unit-table"></table></div>
+    <h3>지형과 건물</h3>
+    <div class="table-wrap"><table id="terrain-table"></table></div>
+  </section>
+
+  <section id="tab-about" class="tab-panel document" hidden>
+    <div class="doc-heading"><div class="eyebrow">WHAT IS NEW, WHAT IS BORROWED</div><h2>수치는 원작에서 읽고, 그림·지도·코드는 새로 만들었다.</h2><p>동현워는 닌텐도 DS용 턴제 전술 게임 「Age of Empires: The Age of Kings」(2006)의 규칙 틀(건물 수입·점령·병종 상성·지형 보너스·수도사·용병)을 단순하게 옮긴 팬 실험이다.</p></div>
+    <div class="science-block"><span class="index">01</span><div><h3>원작의 그림·소리·지도·글은 담지 않았다.</h3><p>원작의 그래픽, 음악·효과음, 지도, 대사와 시나리오는 하나도 쓰지 않는다. 화면의 모든 도트 그림과 여섯 지도는 동현워 코드로 새로 그렸다. 원작에서 가져온 것은 병종·건물의 숫자(공격·방어·이동·사거리·가격 등)와 이름뿐이다.</p></div></div>
+    <div class="science-block"><span class="index">02</span><div><h3>숫자의 출처</h3><p>병종과 건물의 공격·방어·이동·사거리·가격은 원작 NDS 판에 들어 있는 수치 기록을 읽어 공개 해설과 맞대었다. 공개 해설은 <a href="https://ageofempires.fandom.com/wiki/Age_of_Empires:_The_Age_of_Kings" target="_blank" rel="noopener">Age of Empires 위키 「The Age of Kings」 항목</a>(지형·건물·병종·용병·영웅)과 <a href="https://gamefaqs.gamespot.com/ds/927039-age-of-empires-the-age-of-kings/faqs/53389" target="_blank" rel="noopener">GameFAQs 해설</a>, <a href="https://www.supercheats.com/nintendods/walkthroughs/ageofempirestheageofkings-walkthrough02.txt" target="_blank" rel="noopener">SuperCheats 공략</a>(인구 한도 식·연구 할인)이다. 원작의 정확한 피해 공식은 공개되어 있지 않아 근사식을 쓴다.</p></div></div>
+    <div class="science-block"><span class="index">03</span><div><h3>상표와 관계</h3><p>Age of Empires는 Microsoft Corporation의 상표다. 동현워는 Microsoft, Majesco, Backbone Entertainment와 관계가 없고, 이들의 승인이나 후원을 받지 않았다.</p></div></div>
+    <div class="science-block"><span class="index">04</span><div><h3>코드와 글꼴의 이용 조건</h3><p>동현워 코드는 MIT, 글꼴(검은고딕 Black Han Sans · Pretendard · 나눔고딕코딩)은 SIL Open Font License를 따른다. 동현랭 실행기는 동현랭 저장소의 MIT 코드를 그대로 쓴다. 코드 라이선스는 원작의 수치·이름에 대한 권리를 주지 않는다.</p></div></div>
+    <aside class="maker-note"><span class="eyebrow">만든 사람</span><p>인하대학교 의과대학 김동현 교수는 백신학·감염학을 연구한다. 동현워는 동현랭 시리즈의 여덟 번째 프로젝트이다.</p></aside>
+  </section>
+</main>
+<footer><span>동현워 v0.1 · 인하대학교 의과대학 교수 김동현</span><span>1인용 대 CPU · 제국 시대 · 안개 없음</span><span><a href="https://raspberry-kim.github.io/donghyun-lang/" target="_blank" rel="noopener">동현랭</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lang" target="_blank" rel="noopener">동현랭 GitHub</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lab7" target="_blank" rel="noopener">동현워 GitHub</a> · <a href="https://raspberry-kim.github.io/donghyun-lab1/" target="_blank" rel="noopener">동현초</a> · <a href="https://raspberry-kim.github.io/donghyun-lab2/" target="_blank" rel="noopener">동현파</a> · <a href="https://raspberry-kim.github.io/donghyun-lab3/" target="_blank" rel="noopener">동현빌</a> · <a href="https://raspberry-kim.github.io/donghyun-lab4/" target="_blank" rel="noopener">동현전</a> · <a href="https://raspberry-kim.github.io/donghyun-lab5/" target="_blank" rel="noopener">동현콥</a> · <a href="https://raspberry-kim.github.io/donghyun-lab6/" target="_blank" rel="noopener">동현텐</a></span></footer>
+<script src="./game.js"></script>
+</body></html>
