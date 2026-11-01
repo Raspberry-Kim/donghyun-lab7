@@ -71,10 +71,19 @@ code.addEventListener('beforeinput',e=>{
 });
 code.oninput=codeChanged;
 code.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();sortie();}});
-function selectExample(){const ex=examples.find(e=>e.id===$('#example').value);code.value=ex.code;$('#example-note').textContent=ex.note;codeChanged();}
+function selectExample(){const ex=examples.find(e=>e.id===$('#example').value);code.value=ex.code;$('#example-note').textContent=ex.note;codeChanged();autoPreview();}
+/* 실행 전 미리보기: 예제를 고르거나 코드를 고치면 코드가 고른 지도를 전장에 조용히 띄운다(출전 명령 6은 무시, 오류면 그대로 둔다) */
+var pvTimer=0, pvKey='';
+function autoPreview(now){
+  clearTimeout(pvTimer);
+  const go=()=>{ if(S) return; let p; try{ p=parseSortie(Donghyun.run(code.value,{maxSteps:300000}).output); }catch(e){ return; }
+    if(p.err.length) return; cfg=p.c; sortieCard(cfg); const k=JSON.stringify(cfg); if(k!==pvKey){ pvKey=k; preview(cfg); } };
+  if(now) go(); else pvTimer=setTimeout(go,300);
+}
+code.addEventListener('input',()=>autoPreview());
 $('#example').onchange=selectExample; selectExample();
 $('#save').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code.value+'\n'],{type:'text/plain;charset=utf-8'}));a.download='sortie.dh';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
-$('#open').onchange=async e=>{const f=e.target.files[0];if(!f)return;code.value=(await f.text()).replace(/\r/g,'').replace(/\n$/,'');codeChanged();e.target.value='';};
+$('#open').onchange=async e=>{const f=e.target.files[0];if(!f)return;code.value=(await f.text()).replace(/\r/g,'').replace(/\n$/,'');codeChanged();autoPreview();e.target.value='';};
 $('#run').onclick=()=>sortie();
 
 /* ---------- 출전 규약 ---------- */
@@ -515,5 +524,5 @@ window.render_game_to_text=()=>JSON.stringify(S?{mode,day:S.day,turn:S.turn,winn
   food:[S.players[1].food,S.players[2].food],gold:[S.players[1].gold,S.players[2].gold],cap:[E.unitCap(S,1),E.unitCap(S,2)],
   units:S.units.map(u=>({id:u.id,t:u.type,o:u.owner,x:u.x,y:u.y,hp:u.hp,done:u.done}))}:{mode:'setup',cfg});
 window.__dongHyunWar={get state(){return S;},key,get mode(){return mode;}};
-sortieCard(cfg); preview(cfg); renderSlotList();
+sortieCard(cfg); preview(cfg); renderSlotList(); autoPreview(true);
 })();
