@@ -1,4 +1,4 @@
-/* 동현워 CPU. 한 번에 행동 하나를 고른다: 유닛 행동 → 생산 → 턴 종료.
+/* 동현워 동현AI. 한 번에 행동 하나를 고른다: 유닛 행동 → 생산 → 턴 종료.
    안개 없이 공개 정보만 쓰며, 운은 평균값(1.0)으로 예상한다. 가치 = 식량 + 1.5 × 금. */
 (function(root){
 const E = (typeof module!=='undefined') ? require('./engine.js') : root.Engine;

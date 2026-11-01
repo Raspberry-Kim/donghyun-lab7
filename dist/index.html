@@ -268,6 +268,9 @@ footer a{color:var(--muted)}
 .workflow{display:flex;flex-wrap:wrap;gap:12px;align-items:center;border-top:1px solid var(--line);padding:20px 0;margin-top:24px;font-size:var(--text-xs);color:var(--muted)}.workflow b{font-weight:400}
 .doi-badge{display:inline-flex;flex:none;border-radius:4px;overflow:hidden;text-decoration:none;white-space:nowrap;font:500 11px/1 var(--mono);letter-spacing:0}.doi-badge b{background:#555;color:#fff;padding:5px 6px;font-weight:500}.doi-badge span{background:#007ec6;color:#fff;padding:5px 7px}.doi-badge:hover{filter:brightness(1.1)}.doi-badge:focus-visible{outline:2px solid var(--ink);outline-offset:2px}.header>.doi-badge{margin:0 auto 0 20px}
 @media(max-width:780px){.getting-started{align-items:flex-start;flex-direction:column;gap:6px;padding:12px}.getting-started p{line-height:1.7}.workflow{gap:8px}.intro{padding:24px 0;align-items:start}.header>.doi-badge{margin-left:10px}.doi-badge span{display:none}}
+
+/* 동현AI의 TM 위첨자 */
+sup.tm{font-size:.55em;line-height:0;vertical-align:super;margin-left:.08em;letter-spacing:0;font-weight:inherit}
 </style>
 </head>
 <body>
@@ -281,7 +284,7 @@ footer a{color:var(--muted)}
 <!-- SERIES-NAV-END -->
   <section class="intro">
     <div><div class="eyebrow">MEDIEVAL TACTICS × ESOTERIC LANGUAGE</div><h1>중세 전술 실험실: <span class="title-brand">동현<span>워</span><sup>TM</sup></span></h1><p><strong>동현랭</strong>으로 출전하는 중세 턴제 전술 게임이다. 모든 연구를 마친 제국 시대에서 시작한다.</p></div>
-    <div class="model-stamp"><strong>1 <span>대</span> CPU</strong><strong>5 <span>문명</span></strong><small>병종 27 · 영웅 5 · 지도 6 · 안개 없음</small></div>
+    <div class="model-stamp"><strong>1 <span>대</span> 동현AI<sup class="tm">TM</sup></strong><strong>5 <span>문명</span></strong><small>병종 27 · 영웅 5 · 지도 6 · 안개 없음</small></div>
   </section>
   <nav class="tabs" aria-label="동현워 메뉴"><button class="active" data-tab="play" aria-current="page">전장</button><button data-tab="protocol">동현워 출전 규약</button><button data-tab="rules">규칙과 병종</button><button data-tab="about">모델과 출처</button><span>출전은 동현랭으로, 전투는 키보드로</span></nav>
   <div class="getting-started"><p><strong>처음이라면?</strong> 예제를 고르고 <b>출전</b>을 눌러 보자. 지도·문명·선공·시작 자원은 모두 <b>동현랭</b> 명령으로만 정한다.</p><a href="https://raspberry-kim.github.io/donghyun-lang/" target="_blank" rel="noopener">동현랭 배우기 · 실행기 ↗</a></div>
@@ -334,13 +337,13 @@ footer a{color:var(--muted)}
     <div class="table-wrap"><table><thead><tr><th>명령</th><th>하는 일</th><th>값</th><th>기본값</th></tr></thead><tbody>
       <tr><td>1</td><td>지도</td><td>1 첫 마을 · 2 강 건너 · 3 사막 오아시스 · 4 산맥 고개 · 5 늪과 숲 · 6 대평원</td><td>1</td></tr>
       <tr><td>2</td><td>나의 문명</td><td>1 브리튼 · 2 프랑크 · 3 몽골 · 4 사라센 · 5 일본</td><td>1</td></tr>
-      <tr><td>3</td><td>CPU 문명</td><td>1~5 (같은 문명끼리도 된다)</td><td>2</td></tr>
-      <tr><td>4</td><td>선공</td><td>1 내가 먼저 · 2 CPU가 먼저</td><td>1</td></tr>
+      <tr><td>3</td><td>동현AI<sup class="tm">TM</sup> 문명</td><td>1~5 (같은 문명끼리도 된다)</td><td>2</td></tr>
+      <tr><td>4</td><td>선공</td><td>1 내가 먼저 · 2 동현AI<sup class="tm">TM</sup>가 먼저</td><td>1</td></tr>
       <tr><td>5</td><td>시작 자원</td><td>0~3000 · 100 단위 · 식량과 금에 같은 양 · 양쪽 같은 양</td><td>500</td></tr>
       <tr><td>7</td><td>난수 시드</td><td>1~2147483646 · 같은 시드는 같은 운(피해 운 · 개종 · 시장 용병)</td><td>매번 새로</td></tr>
       <tr><td>6</td><td>출전</td><td>값 없음 · 반드시 마지막에</td><td>—</td></tr>
     </tbody></table></div>
-    <div class="doc-columns"><div><h3>고정된 조건</h3><p>모든 판은 제국 시대에서 시작하고, 연구는 모두 끝난 것으로 본다. 그래서 병종은 정예·최종 단계의 수치를 쓴다. CPU 난이도는 하나, 전장의 안개는 없다. 사람 한 명과 CPU 한 명만 겨룬다.</p><p>같은 명령을 여러 번 출력하면 마지막 값이 쓰인다. 범위를 벗어난 값, 짝이 없는 명령, 6 뒤의 출력은 오류로 알려 주고 전장에 나가지 않는다.</p></div>
+    <div class="doc-columns"><div><h3>고정된 조건</h3><p>모든 판은 제국 시대에서 시작하고, 연구는 모두 끝난 것으로 본다. 그래서 병종은 정예·최종 단계의 수치를 쓴다. 동현AI<sup class="tm">TM</sup> 난이도는 하나, 전장의 안개는 없다. 사람 한 명과 동현AI<sup class="tm">TM</sup> 한 명만 겨룬다. 동현AI<sup class="tm">TM</sup>는 학습한 인공지능 모델이 아니라, 정해진 규칙으로 수를 고르는 컴퓨터 상대다.</p><p>같은 명령을 여러 번 출력하면 마지막 값이 쓰인다. 범위를 벗어난 값, 짝이 없는 명령, 6 뒤의 출력은 오류로 알려 주고 전장에 나가지 않는다.</p></div>
     <div><h3>예시</h3><pre class="code-example">나는 동현이냐?
   ㅋㅋ 지도 3 · 사막 오아시스
   뿡뿡 도옹~뿡뿡뿡~뿡뿡 도오옹~뿡뿡뿡
@@ -356,7 +359,7 @@ footer a{color:var(--muted)}
     <div class="doc-columns"><div><h3>키보드</h3><table class="key-table"><tbody>
       <tr><td><kbd>←↑↓→</kbd></td><td>커서 이동, 메뉴 고르기, 대상 바꾸기</td></tr>
       <tr><td><kbd>X</kbd></td><td>유닛 선택 · 이동 확정 · 명령 실행 · 생산</td></tr>
-      <tr><td><kbd>Z</kbd></td><td>취소 · 한 단계 뒤로. CPU 차례에는 빨리 감기</td></tr>
+      <tr><td><kbd>Z</kbd></td><td>취소 · 한 단계 뒤로. 동현AI<sup class="tm">TM</sup> 차례에는 빨리 감기</td></tr>
       <tr><td><kbd>S</kbd></td><td>아직 움직이지 않은 다음 유닛으로</td></tr>
       <tr><td><kbd>A</kbd></td><td>커서 아래 유닛의 능력 정보</td></tr>
       <tr><td><kbd>Shift</kbd></td><td>누르고 있는 동안 커서 아래 유닛의 공격 범위</td></tr>
@@ -393,7 +396,7 @@ footer a{color:var(--muted)}
     <aside class="maker-note"><span class="eyebrow">만든 사람</span><p>인하대학교 의과대학 김동현 교수는 백신학·감염학을 연구한다. 동현워는 동현랭 시리즈의 여덟 번째 프로젝트이다.</p></aside>
   </section>
 </main>
-<footer><span>동현워 v0.11 · 인하대학교 의과대학 교수 김동현</span><span>1인용 대 CPU · 제국 시대 · 안개 없음</span><span><a href="https://raspberry-kim.github.io/donghyun-lang/" target="_blank" rel="noopener">동현랭</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lang" target="_blank" rel="noopener">동현랭 GitHub</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lab7" target="_blank" rel="noopener">동현워 GitHub</a> · <a href="https://raspberry-kim.github.io/donghyun-lab1/" target="_blank" rel="noopener">동현초</a> · <a href="https://raspberry-kim.github.io/donghyun-lab2/" target="_blank" rel="noopener">동현파</a> · <a href="https://raspberry-kim.github.io/donghyun-lab3/" target="_blank" rel="noopener">동현빌</a> · <a href="https://raspberry-kim.github.io/donghyun-lab4/" target="_blank" rel="noopener">동현전</a> · <a href="https://raspberry-kim.github.io/donghyun-lab5/" target="_blank" rel="noopener">동현콥</a> · <a href="https://raspberry-kim.github.io/donghyun-lab6/" target="_blank" rel="noopener">동현텐</a> · <a href="https://raspberry-kim.github.io/donghyun-lab8/" target="_blank" rel="noopener">동현둠</a></span></footer>
+<footer><span>동현워 v0.11 · 인하대학교 의과대학 교수 김동현</span><span>1인용 대 동현AI<sup class="tm">TM</sup> · 제국 시대 · 안개 없음</span><span><a href="https://raspberry-kim.github.io/donghyun-lang/" target="_blank" rel="noopener">동현랭</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lang" target="_blank" rel="noopener">동현랭 GitHub</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lab7" target="_blank" rel="noopener">동현워 GitHub</a> · <a href="https://raspberry-kim.github.io/donghyun-lab1/" target="_blank" rel="noopener">동현초</a> · <a href="https://raspberry-kim.github.io/donghyun-lab2/" target="_blank" rel="noopener">동현파</a> · <a href="https://raspberry-kim.github.io/donghyun-lab3/" target="_blank" rel="noopener">동현빌</a> · <a href="https://raspberry-kim.github.io/donghyun-lab4/" target="_blank" rel="noopener">동현전</a> · <a href="https://raspberry-kim.github.io/donghyun-lab5/" target="_blank" rel="noopener">동현콥</a> · <a href="https://raspberry-kim.github.io/donghyun-lab6/" target="_blank" rel="noopener">동현텐</a> · <a href="https://raspberry-kim.github.io/donghyun-lab8/" target="_blank" rel="noopener">동현둠</a></span></footer>
 <script>/*! 동현랭 (Donghyun-lang) runtime — 브라우저와 Node 양쪽에서 동작한다.
  *  <script src="donghyun.js"><\/script>
  *  <script type="text/donghyun" data-input="5" data-output="html"> ... <\/script>
@@ -747,9 +750,9 @@ const CIVS = [
   {id:5, name:'일본',   en:'Japanese', unique:'samurai',  hero:'yoshitsune'}
 ];
 
-/* 지도: 위쪽 절반만 적고 180° 회전으로 아래쪽 절반을 만든다(두 진영이 같은 조건). 위는 CPU, 아래는 나.
+/* 지도: 위쪽 절반만 적고 180° 회전으로 아래쪽 절반을 만든다(두 진영이 같은 조건). 위는 동현AI, 아래는 나.
    지형  . 평지  = 길  : 사막  - 사막길  h 언덕  f 숲  ^ 산  # 다리  _ 여울  % 늪  r 강  ~ 바다
-   건물(소문자 중립, 대문자 CPU)  t 마을회관  b 병영  a 궁수 훈련소  s 마구간  w 공성 무기 공방  c 교회
+   건물(소문자 중립, 대문자 동현AI)  t 마을회관  b 병영  a 궁수 훈련소  s 마구간  w 공성 무기 공방  c 교회
    k 시장  x 성  o 탑  m 방앗간  p 농장  g 광산(언덕 위) */
 const MAP_SRC = [
   {id:1, name:'첫 마을', note:'18×12 · 탁 트인 들판 · 빠른 한 판', half:[
@@ -1128,7 +1131,7 @@ if(typeof module!=='undefined') module.exports=API; else root.Engine=API;
 })(typeof self!=='undefined'?self:this);
 
 ;
-/* 동현워 CPU. 한 번에 행동 하나를 고른다: 유닛 행동 → 생산 → 턴 종료.
+/* 동현워 동현AI. 한 번에 행동 하나를 고른다: 유닛 행동 → 생산 → 턴 종료.
    안개 없이 공개 정보만 쓰며, 운은 평균값(1.0)으로 예상한다. 가치 = 식량 + 1.5 × 금. */
 (function(root){
 const E = (typeof module!=='undefined') ? require('./engine.js') : root.Engine;
@@ -1699,7 +1702,7 @@ root.Render=Render;
 })(typeof self!=='undefined'?self:this);
 
 ;
-/* 동현워 출전 예제. 동현랭 출력 정수: 명령 번호 뒤에 값. 1 지도 · 2 나의 문명 · 3 CPU 문명 · 4 선공 · 5 시작 자원 · 7 난수 시드 · 6 출전 */
+/* 동현워 출전 예제. 동현랭 출력 정수: 명령 번호 뒤에 값. 1 지도 · 2 나의 문명 · 3 동현AI™ 문명 · 4 선공 · 5 시작 자원 · 7 난수 시드 · 6 출전 */
 function expression(n){
   if(n===0)return '도옹ㅠ';
   if(n<0)return 'ㅠ '+expression(-n);
@@ -1713,17 +1716,17 @@ const wrap=a=>['나는 동현이냐?',...a,'동현이구나'].join('\n');
 const sortie=block('출전',6);
 const examples=[
  {id:'first',title:'01 · 첫 마을',note:'18×12의 탁 트인 들판. 브리튼(장궁병 · 사자심왕 리처드)으로 프랑크와 겨룬다. 내가 먼저 움직인다.',
-  code:wrap([block('지도 1 · 첫 마을',1,1),block('나의 문명 1 · 브리튼',2,1),block('CPU 문명 2 · 프랑크',3,2),block('선공 1 · 내가 먼저',4,1),sortie])},
+  code:wrap([block('지도 1 · 첫 마을',1,1),block('나의 문명 1 · 브리튼',2,1),block('동현AI™ 문명 2 · 프랑크',3,2),block('선공 1 · 내가 먼저',4,1),sortie])},
  {id:'river',title:'02 · 강 건너',note:'가운데 강을 다리 둘과 여울 둘로 건넌다. 공성 무기는 여울을 지나지 못한다. 일본(사무라이 · 요시쓰네)으로 몽골과 겨룬다.',
-  code:wrap([block('지도 2 · 강 건너',1,2),block('나의 문명 5 · 일본',2,5),block('CPU 문명 3 · 몽골',3,3),sortie])},
+  code:wrap([block('지도 2 · 강 건너',1,2),block('나의 문명 5 · 일본',2,5),block('동현AI™ 문명 3 · 몽골',3,3),sortie])},
  {id:'desert',title:'03 · 사막 오아시스',note:'모래땅에서는 사막 돌격(낙타 · 맘루크 · 살라딘)이 강하다. 사라센으로 브리튼과 겨루고, 시작 자원을 1000으로 늘린다.',
-  code:wrap([block('지도 3 · 사막 오아시스',1,3),block('나의 문명 4 · 사라센',2,4),block('CPU 문명 1 · 브리튼',3,1),block('시작 자원 1000',5,1000),sortie])},
- {id:'pass',title:'04 · 산맥 고개',note:'산맥 사이 고개 하나로 부딪친다. 산 위에서는 사거리가 1 늘고 방어가 40% 오른다. 이번에는 CPU가 먼저 움직인다.',
-  code:wrap([block('지도 4 · 산맥 고개',1,4),block('나의 문명 3 · 몽골',2,3),block('CPU 문명 4 · 사라센',3,4),block('선공 2 · CPU가 먼저',4,2),sortie])},
+  code:wrap([block('지도 3 · 사막 오아시스',1,3),block('나의 문명 4 · 사라센',2,4),block('동현AI™ 문명 1 · 브리튼',3,1),block('시작 자원 1000',5,1000),sortie])},
+ {id:'pass',title:'04 · 산맥 고개',note:'산맥 사이 고개 하나로 부딪친다. 산 위에서는 사거리가 1 늘고 방어가 40% 오른다. 이번에는 동현AI™가 먼저 움직인다.',
+  code:wrap([block('지도 4 · 산맥 고개',1,4),block('나의 문명 3 · 몽골',2,3),block('동현AI™ 문명 4 · 사라센',3,4),block('선공 2 · 동현AI™가 먼저',4,2),sortie])},
  {id:'swamp',title:'05 · 늪과 숲',note:'늪에는 말이 들어가지 못하고, 숲에서는 도끼 투척병이 강하다. 프랑크(잔 다르크)로 일본과 겨룬다.',
-  code:wrap([block('지도 5 · 늪과 숲',1,5),block('나의 문명 2 · 프랑크',2,2),block('CPU 문명 5 · 일본',3,5),sortie])},
+  code:wrap([block('지도 5 · 늪과 숲',1,5),block('나의 문명 2 · 프랑크',2,2),block('동현AI™ 문명 5 · 일본',3,5),sortie])},
  {id:'plain',title:'06 · 대평원',note:'가장 큰 지도. 가운데 중립 성 둘과 탑 넷을 먼저 잡자. 같은 시드 2026은 언제나 같은 운을 낸다.',
-  code:wrap([block('지도 6 · 대평원',1,6),block('나의 문명 1 · 브리튼',2,1),block('CPU 문명 1 · 브리튼',3,1),block('시작 자원 800',5,800),block('난수 시드 2026',7,2026),sortie])}
+  code:wrap([block('지도 6 · 대평원',1,6),block('나의 문명 1 · 브리튼',2,1),block('동현AI™ 문명 1 · 브리튼',3,1),block('시작 자원 800',5,800),block('난수 시드 2026',7,2026),sortie])}
 ];
 
 ;
@@ -1841,6 +1844,8 @@ const $=s=>document.querySelector(s), E=window.Engine, AI=window.AI, R=window.Re
 const canvas=$('#board'), g=canvas.getContext('2d');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+// 컴퓨터 상대의 이름. 글자로 넣는 곳은 AI_T, HTML로 그리는 곳은 AI_H(TM 위첨자)
+const AI_T='동현AI™', AI_H='동현AI<sup class="tm">TM</sup>';
 const MAPNAME=id=>MAPS.find(m=>m.id===id).name;
 const civName=n=>CIVS[n-1].name;
 const UN=t=>UNITS[t].name;
@@ -1929,7 +1934,7 @@ let cfg={...DEFAULT};
 function parseSortie(out){
   const tok=out.split(/\s+/).filter(Boolean).map(Number), c={...DEFAULT}, err=[];
   let go=false;
-  const rule={1:['지도','map',v=>v>=1&&v<=MAPS.length,'1~'+MAPS.length],2:['나의 문명','civ1',v=>v>=1&&v<=CIVS.length,'1~'+CIVS.length],3:['CPU 문명','civ2',v=>v>=1&&v<=CIVS.length,'1~'+CIVS.length],
+  const rule={1:['지도','map',v=>v>=1&&v<=MAPS.length,'1~'+MAPS.length],2:['나의 문명','civ1',v=>v>=1&&v<=CIVS.length,'1~'+CIVS.length],3:[AI_T+' 문명','civ2',v=>v>=1&&v<=CIVS.length,'1~'+CIVS.length],
     4:['선공','first',v=>v===1||v===2,'1 또는 2'],5:['시작 자원','funds',v=>v>=0&&v<=3000&&v%100===0,'0~3000, 100 단위'],7:['난수 시드','seed',v=>v>=1&&v<=2147483646,'1~2147483646']};
   for(let i=0;i<tok.length;i++){
     const n=tok[i];
@@ -1945,8 +1950,8 @@ function parseSortie(out){
   return {c,go,err};
 }
 function sortieCard(c){
-  $('#sortie-card').innerHTML=[['지도',`${c.map} · ${MAPNAME(c.map)}`],['나의 문명',`${c.civ1} · ${civName(c.civ1)}`],['CPU',`${c.civ2} · ${civName(c.civ2)}`],
-    ['선공',c.first===1?'나':'CPU'],['시작 자원',`식량·금 각 ${num(c.funds)}`],['시대 · 안개','제국 시대 · 없음']].map(([a,b])=>`<div><span>${a}</span><strong>${b}</strong></div>`).join('');
+  $('#sortie-card').innerHTML=[['지도',`${c.map} · ${MAPNAME(c.map)}`],['나의 문명',`${c.civ1} · ${civName(c.civ1)}`],[AI_H,`${c.civ2} · ${civName(c.civ2)}`],
+    ['선공',c.first===1?'나':AI_H],['시작 자원',`식량·금 각 ${num(c.funds)}`],['시대 · 안개','제국 시대 · 없음']].map(([a,b])=>`<div><span>${a}</span><strong>${b}</strong></div>`).join('');
 }
 function result(text,kind){ const r=$('#result'); r.textContent=text; r.dataset.kind=kind||''; }
 function sortie(){
@@ -2007,7 +2012,7 @@ async function banner(text,sub,cls,ms=950){
 async function beginTurn(){
   busy=true; const p=S.turn, inc=E.income(S,p); processEvents(); $('#hint').textContent='X 확인 · Z 취소 · Enter 메뉴';
   if(p===2) mode='cpu'; hud();
-  await banner(`${S.day}일째 · ${p===1?'나의 차례':'CPU 차례'}`,`${civName(S.players[p].civ)} · 식량 +${inc.f} · 금 +${inc.g}`,'p'+p);
+  await banner(`${S.day}일째 · ${p===1?'나의 차례':AI_T+' 차례'}`,`${civName(S.players[p].civ)} · 식량 +${inc.f} · 금 +${inc.g}`,'p'+p);
   busy=false;
   if(finishCheck()) return;
   if(p===2) runCPU(); else { mode='idle'; hud(); }
@@ -2019,7 +2024,7 @@ function finishCheck(){
   if(sndOver!==S){ sndOver=S; SND.play(win?'win':'lose'); }
   const card=$('#result-card');
   card.innerHTML=`<div><h3>${win?'승리':'패배'}</h3><p>${S.day}일째 · ${esc(S.reason)}${win?' · 붉은 진영이 이겼다.':' · 푸른 진영이 이겼다.'}</p>
-  <dl><dt></dt><dt>나</dt><dt>CPU</dt><dt>만든 유닛</dt><dd>${P[1].built}</dd><dd>${P[2].built}</dd><dt>무찌른 유닛</dt><dd>${P[1].kills}</dd><dd>${P[2].kills}</dd><dt>개종시킨 유닛</dt><dd>${P[1].converted}</dd><dd>${P[2].converted}</dd><dt>잃은 유닛</dt><dd>${P[1].lost}</dd><dd>${P[2].lost}</dd><dt>건물</dt><dd>${E.buildingsOf(S,1)}</dd><dd>${E.buildingsOf(S,2)}</dd></dl>
+  <dl><dt></dt><dt>나</dt><dt>${AI_H}</dt><dt>만든 유닛</dt><dd>${P[1].built}</dd><dd>${P[2].built}</dd><dt>무찌른 유닛</dt><dd>${P[1].kills}</dd><dd>${P[2].kills}</dd><dt>개종시킨 유닛</dt><dd>${P[1].converted}</dd><dd>${P[2].converted}</dd><dt>잃은 유닛</dt><dd>${P[1].lost}</dd><dd>${P[2].lost}</dd><dt>건물</dt><dd>${E.buildingsOf(S,1)}</dd><dd>${E.buildingsOf(S,2)}</dd></dl>
   <button id="again">출전 준비로 <kbd>X</kbd></button></div>`;
   card.hidden=false; $('#again').onclick=backToSetup;
   status(win?'승리':'패배'); log(`${win?'승리':'패배'} · ${S.reason}`,0);
@@ -2028,7 +2033,7 @@ function finishCheck(){
 
 /* ---------- 기록과 효과 ---------- */
 function log(html,p){ const li=document.createElement('li'); li.className=p?'p'+p:''; li.innerHTML=html; const l=$('#log'); l.prepend(li); while(l.children.length>80) l.lastChild.remove(); }
-const side=p=>p===1?'나':p===2?'CPU':'중립';
+const side=p=>p===1?'나':p===2?AI_T:'중립';
 const TN=t=>TERRAIN[t].name;
 function processEvents(){
   if(!S) return; const now=performance.now();
@@ -2053,12 +2058,12 @@ function processEvents(){
 function hud(){
   if(!S) return;
   $('#co-cards').innerHTML=[1,2].map(p=>{const P=S.players[p], civ=CIVS[P.civ-1], n=E.unitCount(S,p), cap=E.unitCap(S,p), inc=E.income(S,p);
-    return `<div class="co-card p${p} ${S.turn===p&&!S.winner?'turn':''}"><div class="who"><span>${p===1?'나 · 붉은 진영':'CPU · 푸른 진영'}</span><span>${S.turn===p?'차례':''}</span></div>
+    return `<div class="co-card p${p} ${S.turn===p&&!S.winner?'turn':''}"><div class="who"><span>${p===1?'나 · 붉은 진영':AI_H+' · 푸른 진영'}</span><span>${S.turn===p?'차례':''}</span></div>
     <div class="nm"><span class="co-face">${civ.name[0]}</span><div><strong>${civ.name}</strong><small>${UN(civ.unique)} · ${UN(civ.hero)}</small></div></div>
     <dl><dt>식량</dt><dd>${num(P.food)} <small>+${inc.f}</small></dd><dt>금</dt><dd>${num(P.gold)} <small>+${inc.g}</small></dd><dt>유닛</dt><dd>${n}/${cap}</dd><dt>건물</dt><dd>${E.buildingsOf(S,p)}</dd></dl></div>`;}).join('');
   $('#day').textContent=`${S.day}일째`;
-  const tb=$('#turn-badge'); tb.textContent=S.turn===1?'나의 차례':'CPU 차례'; tb.className='p'+S.turn;
-  if(!S.winner) status(mode==='cpu'||S.turn===2?'CPU가 생각하는 중':'나의 차례 · '+({idle:'유닛을 고르자',move:'갈 곳을 고르자',action:'명령을 고르자',target:'대상을 고르자',menu:'메뉴',build:'생산',info:'정보'}[mode]||''));
+  const tb=$('#turn-badge'); tb.textContent=S.turn===1?'나의 차례':AI_T+' 차례'; tb.className='p'+S.turn;
+  if(!S.winner) status(mode==='cpu'||S.turn===2?AI_T+'가 생각하는 중':'나의 차례 · '+({idle:'유닛을 고르자',move:'갈 곳을 고르자',action:'명령을 고르자',target:'대상을 고르자',menu:'메뉴',build:'생산',info:'정보'}[mode]||''));
   infoCard();
 }
 function forecastHTML(){
@@ -2271,7 +2276,7 @@ function showInfo(){
   openMenu(`${d.name} · ${side(u.owner)}`,rows,()=>{mode='idle';});
 }
 
-/* ---------- CPU 차례 ---------- */
+/* ---------- 동현AI 차례 ---------- */
 async function runCPU(){
   mode='cpu'; hud(); let guard=0;
   const wait=ms=>sleep(fast?ms/5:ms);
