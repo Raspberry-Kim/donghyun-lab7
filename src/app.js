@@ -1,6 +1,7 @@
 /* 동현워 화면: 동현랭 출전 → 키보드 전투 → 결과 → 다시 출전 준비 */
 (function(){
 const HINT0='<span><kbd>X</kbd>확인</span><span><kbd>Z</kbd>취소</span><span><kbd>↵</kbd>메뉴</span>'; // 전장 아래 조작 안내
+const HINT_CPU='<span><kbd>Z</kbd><kbd>X</kbd>빨리 감기</span>'; // 동현AI™ 차례: Z나 X를 누르면 그 차례가 끝날 때까지 빨리 감기
 const $=s=>document.querySelector(s), E=window.Engine, AI=window.AI, R=window.Render;
 const canvas=$('#board'), g=canvas.getContext('2d');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -439,7 +440,7 @@ function showInfo(){
 
 /* ---------- 동현AI 차례 ---------- */
 async function runCPU(){
-  mode='cpu'; hud(); let guard=0;
+  mode='cpu'; hud(); let guard=0; $('#hint').innerHTML=HINT_CPU;
   const wait=ms=>sleep(fast?ms/5:ms);
   while(S && !S.winner && S.turn===2 && guard++<400){
     const a=AI.next(S);
@@ -454,7 +455,7 @@ async function runCPU(){
       if(finishCheck()) return;
     }
   }
-  fast=false;
+  fast=false; $('#hint').innerHTML=HINT0;
   if(finishCheck()) return;
   if(S.turn===2){ E.endTurn(S); }
   const first=E.readyUnits(S,1)[0]; ui.cursor=first?[first.x,first.y]:E.findTC(S,1);
