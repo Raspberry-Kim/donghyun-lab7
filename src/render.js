@@ -222,10 +222,55 @@ function grayify(hex){ const n=parseInt(hex.slice(1),16), r=n>>16&255,g=n>>8&255
 function hash(x,y,s=0){ let h=(x*374761393+y*668265263+s*982451653)>>>0; h=(h^(h>>>13))*1274126177>>>0; return (h^(h>>>16))>>>0; }
 
 /* ---- 지형 ---- */
-const TC={grass:'#8fc85b',grassB:'#96cd63',grass2:'#7ab349',grass3:'#a6d872',tree:'#3f8a3a',tree2:'#2d6b2c',trunk:'#6b4a2c',
+/* 기본 색조(TC0)와 지도별 색조(THEMES). 지형·규칙은 그대로 두고 색과 작은 장식만 제목에 맞춘다.
+   fl: 평지의 들꽃 색(null이면 없음) · flRate: 들꽃이 나는 칸의 비율(1/n) · snowDots: 평지에 눈 자국 · palm: 숲을 야자수처럼 */
+const TC0={grass:'#8fc85b',grassB:'#96cd63',grass2:'#7ab349',grass3:'#a6d872',tree:'#3f8a3a',tree2:'#2d6b2c',trunk:'#6b4a2c',
   rock:'#a08467',rock2:'#7a604a',snow:'#f4efe4',water:'#4c8fd9',water2:'#3b78c4',wave:'#9cc6f2',sand:'#ead79a',sandB:'#e3cf8f',sand2:'#c9b06e',sand3:'#f4e6b6',
   road:'#d3c7a6',road2:'#a39578',road3:'#e3d9bc',plank:'#b8854f',plank2:'#7d5530',plank3:'#d9a66a',foam:'#e8f4ff',deep:'#4384d0',bank:'#6f9c3e',river:'#5aa0e6',river2:'#3f86d2',
-  hill:'#7fb24f',hill2:'#5f8f3a',hill3:'#a9d173',swamp:'#5f7d4a',swamp2:'#4b6a3b',mud:'#6d6440',pool:'#5b8a8a',pool2:'#7fb0aa',reed:'#a5b56a',ford:'#86b9e8',stone:'#b8b2a4'};
+  hill:'#7fb24f',hill2:'#5f8f3a',hill3:'#a9d173',hillK:'#41612a',swamp:'#5f7d4a',swamp2:'#4b6a3b',mud:'#6d6440',pool:'#5b8a8a',pool2:'#7fb0aa',reed:'#a5b56a',ford:'#86b9e8',stone:'#b8b2a4',
+  cactus:'#6f9c3e',fl:['#ffd34d','#ffb3c7'],flRate:3,snowDots:false,palm:false};
+const THEMES={
+  village:{},
+  // 2 강 건너: 맑은 강물과 짙은 둑
+  river:{river:'#4f9ae8',river2:'#3680d0',ford:'#7fb6ea',bank:'#5e8e34',grass:'#8ac656',grassB:'#91cb5e',fl:['#ffd34d','#ffffff'],flRate:4},
+  // 3 사막 오아시스: 뜨거운 모래, 늪은 오아시스의 물, 숲은 야자수, 언덕·산은 마른 바위
+  oasis:{sand:'#ecd28a',sandB:'#e6ca7e',sand2:'#c9a95a',sand3:'#f8e8b0',road:'#d9c48f',road2:'#a88f58',road3:'#eedfa8',
+    swamp:'#3f9c92',swamp2:'#2f7f78',mud:'#79b85a',pool:'#86d8cf',pool2:'#b9f0ea',reed:'#4e9a3e',
+    tree:'#5aa83c',tree2:'#3b8328',trunk:'#a07a46',grass3:'#9cd56a',palm:true,
+    hill:'#d2b067',hill2:'#b08f45',hill3:'#eacf8c',hillK:'#7a6230',rock:'#c9a06c',rock2:'#9a7446',snow:'#f1dfb5',cactus:'#5f9a3a',fl:null},
+  // 4 산맥 고개: 잿빛 바위에 흰 눈, 서늘한 풀, 짙은 침엽수
+  alpine:{grass:'#9dc97e',grassB:'#a3cd84',grass2:'#86b268',grass3:'#bfdba0',rock:'#8f8a84',rock2:'#5f5a55',snow:'#ffffff',
+    tree:'#2f7040',tree2:'#1f5230',trunk:'#4f3a28',hill:'#8fb07a',hill2:'#6d8f5c',hill3:'#b7d1a3',hillK:'#4a5e40',
+    road:'#cfc6b2',road2:'#9e9684',road3:'#e2dbca',water:'#5a9ad8',river:'#62a6e8',fl:['#ffffff','#d9c2ff'],flRate:4,snowDots:true},
+  // 5 늪과 숲: 탁한 올리브빛 풀, 검푸른 숲, 흙탕물 늪
+  marsh:{grass:'#86aa52',grassB:'#8cb058',grass2:'#6f9342',grass3:'#9dbd68',tree:'#2f7232',tree2:'#1f5324',trunk:'#4e3a24',
+    swamp:'#4e6a3e',swamp2:'#3b5430',mud:'#5c5030',pool:'#4c7474',pool2:'#6a9a98',reed:'#a3ab5a',
+    hill:'#79a04a',hill2:'#5a7d36',hill3:'#9bbd6a',river:'#4f8ab8',river2:'#3a6f9c',ford:'#6f9cc4',bank:'#5e7a30',road:'#c6b995',road2:'#978a68',road3:'#d8cdaa',fl:['#e8e2a0','#fff'],flRate:6},
+  // 6 대평원: 햇빛 받은 황금빛 풀밭, 들꽃이 많다
+  steppe:{grass:'#a9cc5f',grassB:'#b0d166',grass2:'#92b34a',grass3:'#c8e08a',tree:'#5e9a3c',tree2:'#427a2a',
+    hill:'#9cbe56',hill2:'#7a9c3e',hill3:'#c2dc84',hillK:'#58702c',road:'#dbcfa9',road2:'#ab9d78',road3:'#eae0c2',fl:['#ffd34d','#ffffff','#ff9d5c'],flRate:2},
+  // 7 호숫가 마을: 맑고 푸른 호수, 흰 물보라, 싱그러운 풀
+  lake:{water:'#55b2ea',water2:'#3f98d8',deep:'#4aa6e2',wave:'#c6ecfa',foam:'#ffffff',sand:'#ead99f',grass:'#8dcb5c',grassB:'#94d064',grass3:'#acdc78',
+    river:'#5aa8ea',fl:['#ffd34d','#ffb3c7','#ffffff'],flRate:3},
+  // 8 검은 숲: 어두운 풀과 검푸른 나무, 그늘진 길, 들꽃 없음
+  darkwood:{grass:'#5e8a3e',grassB:'#638f43',grass2:'#4a7030',grass3:'#73a04c',tree:'#1f4a26',tree2:'#132f18',trunk:'#3a2a1a',
+    hill:'#587f3a',hill2:'#426428',hill3:'#729a50',hillK:'#2c4220',road:'#b4a687',road2:'#80755b',road3:'#c6b99a',rock:'#7f7060',rock2:'#55473a',fl:null},
+  // 9 큰 강과 지류: 넓고 푸른 큰 강, 기름진 둑
+  bigriver:{river:'#3f88c8',river2:'#2e6eac',ford:'#6ea2d0',bank:'#55842c',grass:'#86c657',grassB:'#8dcb5f',grass3:'#a4d972',water:'#4a92d4',fl:['#ffd34d','#ffffff'],flRate:4},
+  // 10 해안 성채: 짙은 바다, 밝은 모래톱, 바닷바람에 바랜 풀
+  coast:{water:'#3474bc',water2:'#2a62a4',deep:'#2c66ac',wave:'#86b6e4',foam:'#f4fbff',sand:'#f0e2ac',grass:'#8ec261',grassB:'#95c768',grass3:'#acd57a',
+    rock:'#8f8a84',rock2:'#5f5a55',stone:'#c4bcae',fl:['#ffffff','#ffd34d'],flRate:5},
+  // 11 세 섬: 남국의 옥빛 바다, 하얀 모래, 야자수
+  islands:{water:'#3aa8cc',water2:'#2f92b6',deep:'#3498bd',wave:'#b3ecf6',foam:'#ffffff',sand:'#f7ebbe',grass:'#8fd25a',grassB:'#96d762',grass3:'#b2e67e',
+    tree:'#56ad3a',tree2:'#378a27',trunk:'#a07a46',palm:true,river:'#44b0d2',fl:['#ff6f91','#ffd34d','#ffffff'],flRate:3},
+  // 12 제국 대륙: 늦여름의 묵직한 초록, 금빛 길, 눈 덮인 산
+  empire:{grass:'#8bbd52',grassB:'#92c25a',grass2:'#74a240',grass3:'#a6cf6e',tree:'#3a7e34',tree2:'#276226',snow:'#fbf8f0',rock:'#978269',rock2:'#6c5a46',
+    road:'#d8c89a',road2:'#a6946a',road3:'#e8dbb2',sand:'#e9d28e',sandB:'#e2ca82',fl:['#ffd34d','#ffffff'],flRate:4}
+};
+const TC={...TC0};
+let curTheme='village';
+function setTheme(name){ curTheme=THEMES[name]?name:'village'; Object.assign(TC,TC0,THEMES[curTheme]); }
+function themeOf(map){ if(map.theme) return map.theme; const m=root.DH_DATA.MAPS.find(m=>m.id===map.id); return m?m.theme:'village'; }
 const WATERY=t=>t==='river'||t==='ocean'||t==='bridge'||t==='ford';
 const isDesert=t=>t==='desert'||t==='droad';
 function drawTerrain(g,map,x,y){
@@ -235,17 +280,20 @@ function drawTerrain(g,map,x,y){
   const R=(a,b,w,h,c)=>{ g.fillStyle=c; g.fillRect(X+a,Y+b,w,h); };
   const grass=()=>{ R(0,0,T,T,(x+y)%2?TC.grass:TC.grassB); for(let i=0;i<3;i++){ const h=hash(x,y,i); R(h%14+1,(h>>>4)%14+1,1,1,TC.grass2); R((h>>>8)%14+1,(h>>>12)%14+1,1,1,TC.grass3);} };
   const sand=()=>{ R(0,0,T,T,(x+y)%2?TC.sand:TC.sandB); for(let i=0;i<3;i++){ const h=hash(x,y,i+20); R(h%13+1,(h>>>4)%14+1,2,1,TC.sand2); R((h>>>8)%14+1,(h>>>12)%14+1,1,1,TC.sand3);} };
-  const ground=()=>{ const near=[at(0,-1),at(0,1),at(-1,0),at(1,0)].filter(isDesert).length; (isDesert(t)||(cell.b&&near>=2))?sand():grass(); };
+  const nearD=()=>[at(0,-1),at(0,1),at(-1,0),at(1,0)].filter(isDesert).length;
+  const ground=()=>{ (isDesert(t)||(cell.b&&nearD()>=2))?sand():grass(); };
+  const dry=()=>{ (nearD()>=2?sand:grass)(); }; // 사막 한가운데의 숲·언덕은 모래 위에
   const sea=()=>{ R(0,0,T,T,TC.water); for(let i=0;i<T;i+=4) for(let j=(i/4)%2*2;j<T;j+=4) R(j,i,1,1,TC.deep);
     const h=hash(x,y,7); R(h%10+2,(h>>>5)%10+3,3,1,TC.wave);
     const land=(dx,dy)=>{ const n=at(dx,dy); return n && !WATERY(n); };
     if(land(0,-1)){ R(0,0,T,2,TC.sand); R(0,2,T,1,TC.foam); } if(land(0,1)){ R(0,T-2,T,2,TC.sand); R(0,T-3,T,1,TC.foam); }
     if(land(-1,0)){ R(0,0,2,T,TC.sand); } if(land(1,0)){ R(T-2,0,2,T,TC.sand); } };
-  if(t==='plain'||t==='desert'){ ground(); if(t==='plain'){ const h=hash(x,y,11); if(h%3===0){ const fx=2+h%11, fy=3+(h>>>5)%10; R(fx,fy,1,1,'#fff7e0'); R(fx+1,fy+1,1,1,(h>>>9)%2?'#ffd34d':'#ffb3c7'); } }
-    else { const h=hash(x,y,12); if(h%4===0){ const fx=2+h%10, fy=4+(h>>>5)%8; R(fx,fy,1,3,'#6f9c3e'); R(fx-1,fy+1,1,1,'#6f9c3e'); R(fx+1,fy,1,1,'#6f9c3e'); } } }
-  else if(t==='forest'){ grass(); const pp=bpal(0); R(1,13,14,2,'rgba(20,30,10,.22)'); for(const [a,b] of [[5,-3],[1,3],[8,4]]) stamp(g,TREE,X+a,Y+b,pp); }
+  if(t==='plain'||t==='desert'){ ground(); if(t==='plain'){ const h=hash(x,y,11); if(TC.fl&&h%TC.flRate===0){ const fx=2+h%11, fy=3+(h>>>5)%10; R(fx,fy,1,1,'#fff7e0'); R(fx+1,fy+1,1,1,TC.fl[(h>>>9)%TC.fl.length]); }
+      if(TC.snowDots&&h%5===1){ const sx=1+(h>>>3)%10, sy=1+(h>>>7)%11; R(sx,sy,4,2,TC.snow); R(sx+1,sy+2,2,1,TC.snow); } }
+    else { const h=hash(x,y,12); if(h%4===0){ const fx=2+h%10, fy=4+(h>>>5)%8; R(fx,fy,1,3,TC.cactus); R(fx-1,fy+1,1,1,TC.cactus); R(fx+1,fy,1,1,TC.cactus); } } }
+  else if(t==='forest'){ dry(); const pp=bpal(0); R(1,13,14,2,'rgba(20,30,10,.22)'); for(const [a,b] of [[5,-3],[1,3],[8,4]]) stamp(g,TC.palm?PALM:TREE,X+a,Y+b,pp); }
   else if(t==='mountain'){ grass(); stamp(g,MOUNTAIN,X,Y-4,bpal(0)); }
-  else if(t==='hill'){ grass(); const pal={k:'#41612a',a:TC.hill3,b:TC.hill,c:TC.hill2};
+  else if(t==='hill'){ dry(); const pal={k:TC.hillK,a:TC.hill3,b:TC.hill,c:TC.hill2};
     stamp(g,['......kkkk......','....kkaaaakk....','...kaaabbbbbk...','..kabbbbbbbbck..','.kabbbbbbbbbcck.','kabbbbbbbbbbbcck','kbbbbbbbbbbbcccck'.slice(0,16),'.kkkkkkkkkkkkkk.'],X,Y+6,pal); }
   else if(t==='swamp'){ R(0,0,T,T,TC.swamp); const h=hash(x,y,31);
     R(2+h%3,3,7,3,TC.mud); R(3+h%3,4,5,1,TC.pool); R(8,9+(h>>>3)%2,6,3,TC.mud); R(9,10+(h>>>3)%2,4,1,TC.pool); R(4+(h>>>5)%3,10,1,1,TC.pool2);
@@ -278,8 +326,9 @@ function drawTerrain(g,map,x,y){
   else grass();
   if(cell.b) drawBuilding(g,cell,X,Y);
 }
-const TREE=['..kkk..','.kaabk.','kaabbbk','kabbbck','kbbbcck','.kccck.','..ktk..','..kkk..'];
-const MOUNTAIN=['................','.......kk.......','......kwwk......','.....kwwwRk.....','.....kwwrRk.....','....krrwrRRk....',
+const TREE=['..kkk..','.kaabk.','kaabbbk','kabbbck','kbbbcck','.kccck.','..kuk..','..kkk..'];
+const PALM=['kb.k.bk','.kbkbk.','kbkakbk','.kkbkk.','...ku..','...ku..','..kuk..','..kkk..'];
+const MOUNTAIN=['................','.......kk.......','......kzzk......','.....kzzzRk.....','.....kzzrRk.....','....krrzrRRk....',
 '....krrrrRRk....','...krrrrrRRRk...','...krrrrrRRRk...','..krrrrrrRRRRk..','..krrrrrRRRRRk..','.krrrrrrRRRRRRk.',
 '.krrrrrrRRRRRRk.','krrrrrrrRRRRRRRk','krrrrrrRRRRRRRRk','kkkkkkkkkkkkkkkk','.SSSSSSSSSSSSSS.'];
 /* 건물 도트(칸보다 4px 높다). m/d/l 진영색 · w 벽(회반죽) · W 벽 그늘 · t/T 나무 · g/G 돌 · y 금 · S 그림자 */
@@ -335,7 +384,7 @@ mine:[
 };
 function stamp(g,rows,X,Y,pal){ for(let y=0;y<rows.length;y++){ const r=rows[y]; for(let i=0;i<r.length;i++){ const ch=r[i]; if(ch==='.') continue; const c=pal[ch]||C[ch]; if(!c) continue; g.fillStyle=c; g.fillRect(X+i,Y+y,1,1); } } }
 function bpal(owner){ const P=PAL[owner||0]; return {m:P.m,d:P.d,l:P.l,S:'rgba(20,30,10,.28)',w:'#efe6d2',W:'#c9bda3',g:'#bdb6a8',G:'#8d8578',
-  r:TC.rock,R:TC.rock2,a:TC.grass3,b:TC.tree,c:TC.tree2,t:'#a06c3a',T:'#5f3b1c',y:'#f2b705',Y:'#c48f12',o:'#e08a2e'}; }
+  r:TC.rock,R:TC.rock2,z:TC.snow,u:TC.trunk,a:TC.grass3,b:TC.tree,c:TC.tree2,t:'#a06c3a',T:'#5f3b1c',y:'#f2b705',Y:'#c48f12',o:'#e08a2e'}; }
 function drawBuilding(g,cell,X,Y){
   const b=cell.b, rows=BLD[b.type], pal=bpal(b.owner);
   if(b.type==='farm'){ pal.Y='#8aa83f'; pal.y='#c9b45a'; pal.t='#a07f3e'; }
@@ -343,6 +392,7 @@ function drawBuilding(g,cell,X,Y){
   stamp(g,rows,X,Y+T-rows.length,pal);
 }
 function terrainLayer(map){
+  setTheme(themeOf(map));
   const c=mk(map.W*T,map.H*T+PAD), g=c.getContext('2d'); g.translate(0,PAD);
   for(let y=0;y<map.H;y++) for(let x=0;x<map.W;x++) drawTerrain(g,map,x,y);
   return c;
@@ -355,7 +405,7 @@ function terrainKey(map){ let s=''; for(const r of map.grid) for(const c of r) i
 
 /* ---- 장면 ---- */
 function draw(g, s, ui, now){
-  const map=s.map, tk=terrainKey(map)+':'+(ui.terrainVer||0);
+  const map=s.map, tk=map.id+':'+themeOf(map)+':'+terrainKey(map)+':'+(ui.terrainVer||0);
   if(!ui.terrain || ui.terrainKey!==tk){ ui.terrain=terrainLayer(map); ui.terrainKey=tk; ui.waterTiles=null; }
   g.imageSmoothingEnabled=false;
   g.drawImage(ui.terrain,0,0); g.save(); g.translate(0,PAD);
@@ -403,6 +453,6 @@ function draw(g, s, ui, now){
   }
   g.restore();
 }
-const Render={T,PAD,draw,sprite,terrainLayer,PAL};
+const Render={T,PAD,draw,sprite,terrainLayer,PAL,THEMES,setTheme,themeOf};
 root.Render=Render;
 })(typeof self!=='undefined'?self:this);

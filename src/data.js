@@ -128,25 +128,26 @@ const CIVS = [
 ];
 
 /* 지도: 위쪽 절반만 적고 180° 회전으로 아래쪽 절반을 만든다(두 진영이 같은 조건). 위는 동현AI, 아래는 나.
+   theme: 그림 색조(render.js의 THEMES). 지형·규칙은 바꾸지 않고 색과 장식만 제목에 맞춘다.
    지형  . 평지  = 길  : 사막  - 사막길  h 언덕  f 숲  ^ 산  # 다리  _ 여울  % 늪  r 강  ~ 바다
    건물(소문자 중립, 대문자 동현AI)  t 마을회관  b 병영  a 궁수 훈련소  s 마구간  w 공성 무기 공방  c 교회
    k 시장  x 성  o 탑  m 방앗간  p 농장  g 광산(언덕 위) */
 const MAP_SRC = [
-  {id:1, name:'첫 마을', note:'18×12 · 탁 트인 들판 · 빠른 한 판', half:[
+  {id:1, theme:'village', name:'첫 마을', note:'18×12 · 탁 트인 들판 · 빠른 한 판', half:[
     '^^f..g....fPMP=T=G',
     '^f...p.m..=PP.=B=.',
     'f..o......=.A===S.',
     '...f..h..==W.C=K.X',
     '.g..ff..=.....f.h.',
     '....x.===...f..p.m']},
-  {id:2, name:'강 건너', note:'18×12 · 가운데 강 · 다리 둘과 여울 둘', half:[
+  {id:2, theme:'river', name:'강 건너', note:'18×12 · 가운데 강 · 다리 둘과 여울 둘', half:[
     'hhf..g...fPMP=T=G^',
     'hf..p.m..=PP.=B=.f',
     'f.o.....==.A===S..',
     '..f..h.=..W.C=K.X.',
     '.g..f..=..f...h..g',
     'rrr#rrrr__rrrr#rrr']},
-  {id:3, name:'사막 오아시스', note:'18×14 · 모래와 늪 · 낙타의 땅', half:[
+  {id:3, theme:'oasis', name:'사막 오아시스', note:'18×14 · 모래와 늪 · 낙타의 땅', half:[
     '::::g:::::PMP-T-G:',
     ':h::::p:m:PP:-B-::',
     '::::::::--:A---S::',
@@ -154,7 +155,7 @@ const MAP_SRC = [
     ':g:::%f:-::::::h::',
     '::::::::-::::p:m::',
     '::x::----:::::::g:']},
-  {id:4, name:'산맥 고개', note:'20×14 · 산맥 사이 고개 · 성을 쥐어라', half:[
+  {id:4, theme:'alpine', name:'산맥 고개', note:'20×14 · 산맥 사이 고개 · 성을 쥐어라', half:[
     '^^^^g..f.fPMP=T=G^^^',
     '^^h..p.m..PP.=B=..h^',
     '^^...o...=.A===S...^',
@@ -162,14 +163,14 @@ const MAP_SRC = [
     '^^^^^^.=..^^^^...f.^',
     '.g.^^^.=.hh^^^^.p.m.',
     '.....x.=====.....f..']},
-  {id:5, name:'늪과 숲', note:'18×12 · 늪이 기병을 막는다 · 숲 사람의 땅', half:[
+  {id:5, theme:'marsh', name:'늪과 숲', note:'18×12 · 늪이 기병을 막는다 · 숲 사람의 땅', half:[
     'fff.g..f.fPMP=T=Gf',
     'ff.%%p.m..PP.=B=.f',
     'f.%%o..ff=.A===S..',
     '.%%f..f.==W.C=K.X.',
     '.g.%f..=..ff..%%.g',
     '..%%x.==..%%.p.m.f']},
-  {id:6, name:'대평원', note:'22×14 · 넓은 들판 · 중립 성 둘', half:[
+  {id:6, theme:'steppe', name:'대평원', note:'22×14 · 넓은 들판 · 중립 성 둘', half:[
     '^^f..g.....f..PMP=T=G^',
     '^f...p.m...=..PP.=B=.f',
     'f..o.....h.=..WA===S..',
@@ -178,7 +179,7 @@ const MAP_SRC = [
     '...p.m.....=.g.....o..',
     'f.......====.....p.m..']},
   // 7~12: 원작 지도의 짜임(호수·숲·강·해안·섬·대륙)만 참고해 새로 그렸다. 원작 지도는 옮기지 않았다.
-  {id:7, name:'호숫가 마을', note:'20×14 · 가운데 호수 · 호수를 도는 두 길', half:[
+  {id:7, theme:'lake', name:'호숫가 마을', note:'20×14 · 가운데 호수 · 호수를 도는 두 길', half:[
     '^f..g....fPMP=T=G.^^',
     'f..p.m...=PP.=B=..f^',
     '..o.....==.A===S...f',
@@ -186,7 +187,7 @@ const MAP_SRC = [
     '.g..f..=.....==f.h..',
     '....x===f.~~~~=f.p.m',
     '.=====~~~~~~~~=====.']},
-  {id:8, name:'검은 숲', note:'18×14 · 빽빽한 숲 · 숲 사이로 난 길', half:[
+  {id:8, theme:'darkwood', name:'검은 숲', note:'18×14 · 빽빽한 숲 · 숲 사이로 난 길', half:[
     'fff.g.ffffPMP=T=Gf',
     'ff.p.mff.=PP.=B=.f',
     'f.o..ff===.A===S.f',
@@ -194,7 +195,7 @@ const MAP_SRC = [
     'fgff.ff=fff.fff.hf',
     'f.fxff.=.ff.pf.fmf',
     'ff.....====ff...ff']},
-  {id:9, name:'큰 강과 지류', note:'22×14 · 큰 강과 지류 · 다리 둘과 여울', half:[
+  {id:9, theme:'bigriver', name:'큰 강과 지류', note:'22×14 · 큰 강과 지류 · 다리 둘과 여울', half:[
     '^^f..g.....fPMP=T=G^^^',
     '^f..p.m....=.PP.=B=..f',
     'f..o.....==..A===S...f',
@@ -202,7 +203,7 @@ const MAP_SRC = [
     '.g..f.._.=.....=..h...',
     '..x...rr.==.f..===.mo.',
     'rrrr#rrrrr__rrrrr#rrrr']},
-  {id:10, name:'해안 성채', note:'20×16 · 바닷가 성채 · 해안을 따라 내려가는 길', half:[
+  {id:10, theme:'coast', name:'해안 성채', note:'20×16 · 바닷가 성채 · 해안을 따라 내려가는 길', half:[
     '~~~..g....fPMP=T=G^^',
     '~~..p.m...=PP.=B=.f^',
     '~~o.......=.A===S..f',
@@ -211,7 +212,7 @@ const MAP_SRC = [
     '~~~~x..=..hh....p.m.',
     '~~~...==..^^..f.....',
     '~~..o.=.....f...==..']},
-  {id:11, name:'세 섬', note:'22×16 · 세 섬 · 다리와 여울로 잇는다 · 가운데 섬의 성', half:[
+  {id:11, theme:'islands', name:'세 섬', note:'22×16 · 세 섬 · 다리와 여울로 잇는다 · 가운데 섬의 성', half:[
     '^f..g.....fPMP=T=G...^',
     'f..p.m....=.PP.=B=..f.',
     '..o......==..A===S....',
@@ -220,7 +221,7 @@ const MAP_SRC = [
     '~~~~~~~~#~~~~~~_~~~~~~',
     '~~.g..x.=....h...o..~~',
     '~~.p.m..====f.....f.~~']},
-  {id:12, name:'제국 대륙', note:'24×16 · 가장 큰 지도 · 사막·산·늪 · 중립 성 둘', half:[
+  {id:12, theme:'empire', name:'제국 대륙', note:'24×16 · 가장 큰 지도 · 사막·산·늪 · 중립 성 둘', half:[
     '^^^f..g.....f...PMP=T=G^',
     '^^f..p.m.....=...PP.=B=f',
     '^f..o........=..=A===S..',
@@ -250,7 +251,7 @@ function buildMap(src){
       row.push({t:base, b:{type:bt, owner, hp:100}});
     } else throw Error('지도 문자 오류: '+ch);
   } grid.push(row);}
-  return {id:src.id, name:src.name, note:src.note, W, H, grid};
+  return {id:src.id, name:src.name, note:src.note, theme:src.theme||'village', W, H, grid};
 }
 const MAPS = MAP_SRC.map(buildMap);
 
