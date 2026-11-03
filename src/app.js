@@ -135,7 +135,14 @@ let previewS=null;
 function preview(c){ previewS=E.newGame({map:c.map,civ1:c.civ1,civ2:c.civ2,first:1,funds:0,seed:1}); previewS.units=[]; ui={cursor:null,fx:[],terrainVer:(ui.terrainVer||0)+1}; size(previewS); $('#day').textContent=MAPNAME(c.map); $('#turn-badge').textContent=''; $('#turn-badge').className=''; $('#tile-info').textContent=MAPS.find(m=>m.id===c.map).note; }
 function size(s){ canvas.width=s.map.W*R.T; canvas.height=s.map.H*R.T+R.PAD; fit(); }
 function fit(){
-  const st=canvas.parentElement, w=st.clientWidth; if(!w||!canvas.width) return;
+  if(!canvas.width) return;
+  const full=document.getElementById('stage-full');
+  if(full&&full.classList.contains('fs')){ /* 전체 화면: 띠와 화면 단추를 뺀 자리에 비율을 지켜 최대로 */
+    const side=full.classList.contains('side'), cs=getComputedStyle(full), h=el=>el&&el.offsetHeight||0;
+    let aw=full.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight), ah=full.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+    if(side) aw-=2*190+20; else ah-=h(full.querySelector('.board-top'))+h(full.querySelector('.board-bottom'))+h(full.querySelector('.touchpad'))+30;
+    canvas.style.width=Math.max(120,Math.min(aw,ah*canvas.width/canvas.height))+'px'; canvas.style.margin='0 auto'; return; }
+  const st=canvas.parentElement, w=st.clientWidth; if(!w) return;
   const maxH=Math.max(260,innerHeight-230), byH=maxH*canvas.width/canvas.height;
   canvas.style.width=Math.min(w,byH)+'px'; canvas.style.margin='0 auto';
 }
@@ -148,7 +155,7 @@ requestAnimationFrame(frame);
 
 /* ---------- 게임 시작·종료 ---------- */
 function liveUI(){
-  $('#setup-panel').hidden=true; $('#hud').hidden=false; $('#board-wrap').classList.add('live'); $('#touchpad').classList.add('on');
+  $('#setup-panel').hidden=true; $('#hud').hidden=false; $('#board-wrap').classList.add('live'); $('#touchpad').classList.add('on'); $('#full').disabled=false;
   fit(); $('#board-wrap').focus({preventScroll:true});
 }
 function startGame(c){
@@ -163,7 +170,7 @@ function startGame(c){
 }
 function backToSetup(){
   S=null; mode='setup'; closeMenu(); $('#result-card').hidden=true; $('#banner').hidden=true;
-  $('#setup-panel').hidden=false; $('#hud').hidden=true; $('#board-wrap').classList.remove('live'); $('#touchpad').classList.remove('on');
+  $('#setup-panel').hidden=false; $('#hud').hidden=true; $('#board-wrap').classList.remove('live'); $('#touchpad').classList.remove('on'); exitFull(); $('#full').disabled=true;
   preview(cfg); renderSlotList(); status('출전 준비'); result('다시 출전하려면 코드를 고치거나 그대로 출전을 누르자.'); $('#hint').innerHTML=HINT0;
 }
 $('#concede').onclick=()=>{ if(!S||S.winner||mode==='cpu') return; confirmMenu('항복하고 출전 준비로 돌아갈까?',[['항복한다',()=>{E.concede(S,1);finishCheck();}],['계속 싸운다',()=>{}]]); };
@@ -194,7 +201,7 @@ function finishCheck(){
 }
 
 /* ---------- 기록과 효과 ---------- */
-function log(html,p){ const li=document.createElement('li'); li.className=p?'p'+p:''; li.innerHTML=html; const l=$('#log'); l.prepend(li); while(l.children.length>80) l.lastChild.remove(); }
+function log(html,p){ const li=document.createElement('li'); li.className=p?'p'+p:''; li.innerHTML=html; const l=$('#log'); l.prepend(li); $('#fs-log').textContent=li.textContent; while(l.children.length>80) l.lastChild.remove(); }
 const side=p=>p===1?'나':p===2?AI_T:'중립';
 const TN=t=>TERRAIN[t].name;
 function processEvents(){
@@ -223,6 +230,7 @@ function hud(){
     return `<div class="co-card p${p} ${S.turn===p&&!S.winner?'turn':''}"><div class="who"><span>${p===1?'나 · 붉은 진영':AI_H+' · 푸른 진영'}</span><span>${S.turn===p?'차례':''}</span></div>
     <div class="nm"><span class="co-face">${civ.name[0]}</span><div><strong>${civ.name}</strong><small>${UN(civ.unique)} · ${UN(civ.hero)}</small></div></div>
     <dl><dt>식량</dt><dd>${num(P.food)} <small>+${inc.f}</small></dd><dt>금</dt><dd>${num(P.gold)} <small>+${inc.g}</small></dd><dt>유닛</dt><dd>${n}/${cap}</dd><dt>건물</dt><dd>${E.buildingsOf(S,p)}</dd></dl></div>`;}).join('');
+  $('#fs-co').innerHTML=[1,2].map(p=>{const P=S.players[p], civ=CIVS[P.civ-1], inc=E.income(S,p); return `<span class="fc p${p}${S.turn===p&&!S.winner?' turn':''}"><b>${p===1?'나':AI_H}</b> ${civ.name} · 식량 ${num(P.food)}<small>+${inc.f}</small> · 금 ${num(P.gold)}<small>+${inc.g}</small> · 유닛 ${E.unitCount(S,p)}/${E.unitCap(S,p)} · 건물 ${E.buildingsOf(S,p)}</span>`;}).join('');
   $('#day').textContent=`${S.day}일째`;
   const tb=$('#turn-badge'); tb.textContent=S.turn===1?'나의 차례':AI_T+' 차례'; tb.className='p'+S.turn;
   if(!S.winner) status(mode==='cpu'||S.turn===2?AI_T+'가 생각하는 중':'나의 차례 · '+({idle:'유닛을 고르자',move:'갈 곳을 고르자',action:'명령을 고르자',target:'대상을 고르자',menu:'메뉴',build:'생산',info:'정보'}[mode]||''));
@@ -252,6 +260,7 @@ function infoCard(){
   } else if(mode==='idle'&&S.turn===1){ const b=E.canBuildAt(S,1,x,y); h+=`<p>${b.length?'X로 생산 메뉴를 연다.':'Enter로 메뉴(턴 종료 · 저장 · 불러오기)를 연다.'}</p>`; }
   box.innerHTML=h;
   $('#tile-info').textContent=`${c.b?BN(c.b.type)+' · '+side(c.b.owner)+' '+c.b.hp:td.name+' +'+td.def+'%'}${u?` · ${UNITS[u.type].name} ${u.hp}`:''}`;
+  if($('#stage-full').classList.contains('fs')) $('#fs-info').textContent=box.innerText.split('\n').map(t=>t.trim()).filter(Boolean).join(' · ');
 }
 
 /* ---------- 메뉴 ---------- */
@@ -534,4 +543,25 @@ window.render_game_to_text=()=>JSON.stringify(S?{mode,day:S.day,turn:S.turn,winn
   units:S.units.map(u=>({id:u.id,t:u.type,o:u.owner,x:u.x,y:u.y,hp:u.hp,done:u.done}))}:{mode:'setup',cfg});
 window.__dongHyunWar={get state(){return S;},key,get mode(){return mode;}};
 sortieCard(cfg); preview(cfg); renderSlotList(); autoPreview(true);
+/* ---------- 전체 화면(동현둠과 같은 규칙) ---------- */
+const stageFull=$('#stage-full');
+const fullEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+const canNativeFull=!!((document.fullscreenEnabled||document.webkitFullscreenEnabled)&&(stageFull.requestFullscreen||stageFull.webkitRequestFullscreen));
+const isPseudo=()=>stageFull.classList.contains('pseudo-full');
+const isFull=()=>fullEl()===stageFull||isPseudo();
+const SIDE_MQ=matchMedia('(orientation: landscape) and (pointer: coarse)');
+function setPseudo(on){ stageFull.classList.toggle('pseudo-full',on); document.documentElement.classList.toggle('pseudo-full-on',on); onFull(); }
+function exitFull(){ if(isPseudo()) return setPseudo(false); if(fullEl()===stageFull) (document.exitFullscreen||document.webkitExitFullscreen||(()=>{})).call(document); }
+let hintTimer=0;
+function onFull(){ const on=isFull(); stageFull.classList.toggle('fs',on); stageFull.classList.toggle('side',on&&SIDE_MQ.matches);
+  $('#exit-full').hidden=!on; $('#full').textContent=on?'전체 화면 닫기':'전체 화면';
+  clearTimeout(hintTimer); $('#full-hint').hidden=!on; if(on) hintTimer=setTimeout(()=>$('#full-hint').hidden=true,5000);
+  fit(); setTimeout(fit,60); if(on) $('#full').blur(); if(S) hud(); }
+document.addEventListener('fullscreenchange',onFull); document.addEventListener('webkitfullscreenchange',onFull);
+SIDE_MQ.addEventListener?SIDE_MQ.addEventListener('change',onFull):SIDE_MQ.addListener(onFull);
+$('#exit-full').onclick=exitFull;
+$('#full').onclick=()=>{ if(isFull()) return exitFull(); if(!S) return;
+  if(!canNativeFull) return setPseudo(true);
+  try{ const r=stageFull.requestFullscreen?stageFull.requestFullscreen():stageFull.webkitRequestFullscreen();
+    if(r&&r.catch) r.catch(()=>setPseudo(true)); }catch(e){ setPseudo(true); } };
 })();
