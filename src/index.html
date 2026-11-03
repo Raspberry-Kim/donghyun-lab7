@@ -12,7 +12,7 @@
 <body>
 <header class="header">
   <a class="brand" href="#" aria-label="동현워 첫 화면으로"><span class="brand-main"><img class="brand-icon" src="__BRAND_ICON__" alt="" width="96" height="96">동현<span>워</span><sup>TM</sup></span><i class="brand-divider"></i><span class="brand-sub">MEDIEVAL TACTICS<small>코드로 출전하는 중세 전장의 전술</small></span></a><a class="doi-badge" href="https://doi.org/10.5281/zenodo.23793857" target="_blank" rel="noopener" aria-label="동현워 Zenodo DOI 10.5281/zenodo.23793857" title="Zenodo DOI (모든 버전)"><b>DOI</b><span>10.5281/zenodo.23793857</span></a>
-  <div class="edition">v0.25<button id="sound" class="icon-btn" aria-label="효과음 켜기·끄기" title="효과음 (M)" aria-pressed="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="snd-on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="snd-off" d="m16 9 6 6m0-6-6 6"/></svg></button><button id="theme" class="icon-btn" aria-label="밝은 화면과 어두운 화면 전환" title="화면 전환" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div>
+  <div class="edition">v0.26<button id="sound" class="icon-btn" aria-label="효과음 켜기·끄기" title="효과음 (M)" aria-pressed="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="snd-on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="snd-off" d="m16 9 6 6m0-6-6 6"/></svg></button><button id="theme" class="icon-btn" aria-label="밝은 화면과 어두운 화면 전환" title="화면 전환" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div>
 </header>
 <main>
 <!-- SERIES-NAV-START -->
@@ -22,7 +22,7 @@
     <div><div class="eyebrow">MEDIEVAL TACTICS × ESOTERIC LANGUAGE</div><h1>중세 전술 실험실: <span class="title-brand">동현<span>워</span><sup>TM</sup></span></h1><p><strong>동현랭</strong>으로 출전하는 중세 턴제 전술 게임이다. 모든 연구를 마친 제국 시대에서 시작한다.</p></div>
     <div class="model-stamp"><strong>나 <span>대</span> 동현AI<sup class="tm">TM</sup></strong><strong>5 <span>문명</span></strong><small>병종 27 · 영웅 5 · 지도 12 · 안개 없음</small></div>
   </section>
-  <nav class="tabs" aria-label="동현워 메뉴"><button class="active" data-tab="play" aria-current="page">전장</button><button data-tab="protocol">동현워 출전 규약</button><button data-tab="rules">규칙과 병종</button><button data-tab="about">모델과 출처</button><span>출전은 동현랭으로, 전투는 키보드로</span></nav>
+  <nav class="tabs" aria-label="동현워 메뉴"><button class="active" data-tab="play" aria-current="page">전장</button><button data-tab="protocol">동현워 출전 규약</button><button data-tab="rules">규칙과 병종</button><button data-tab="about">모델과 출처</button><span>출전은 동현랭으로, 전투는 키보드나 게임패드로</span></nav>
   <div class="getting-started"><p><strong>처음이라면?</strong> 예제를 고르고 <b>출전</b>을 눌러 보자. 지도·문명·선공·시작 자원은 모두 <b>동현랭</b> 명령으로만 정한다.</p><a href="https://raspberry-kim.github.io/donghyun-lang/" target="_blank" rel="noopener">동현랭 배우기 · 실행기 ↗</a></div>
 
   <section id="tab-play" class="tab-panel">
@@ -61,7 +61,7 @@
           <div class="co-cards" id="co-cards"></div>
           <div class="info-card" id="info-card"></div>
           <div class="log-card"><div class="section-title"><h2><span>C</span> 전투 기록</h2><button id="concede" class="small-btn">항복하고 출전 준비로</button></div><ol id="log"></ol></div><input id="load-file" type="file" accept=".dhsave,.json,application/json" hidden>
-          <div class="keys"><span><span class="kbd-arrows"><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd></span>커서</span><span><kbd>X</kbd>확인</span><span><kbd>Z</kbd>취소</span><span><kbd>S</kbd>다음 유닛</span><span><kbd>A</kbd>정보</span><span><kbd>Shift</kbd>사거리</span><span><kbd>Enter</kbd>메뉴·턴 종료</span><span><kbd>M</kbd>효과음</span><span><kbd>Z</kbd>/<kbd>X</kbd>동현AI<sup class="tm">TM</sup> 차례 빨리 감기</span></div>
+          <div class="keys"><span><span class="kbd-arrows"><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd></span>커서</span><span><kbd>X</kbd>확인</span><span><kbd>Z</kbd>취소</span><span><kbd>S</kbd>다음 유닛</span><span><kbd>A</kbd>정보</span><span><kbd>Shift</kbd>사거리</span><span><kbd>Enter</kbd>메뉴·턴 종료</span><span><kbd>M</kbd>효과음</span><span><kbd>Z</kbd>/<kbd>X</kbd>동현AI<sup class="tm">TM</sup> 차례 빨리 감기</span><span class="pad-note">게임패드(닌텐도 배치) A 확인 · B 취소 · X 다음 유닛 · Y 정보 · L 사거리 · + 메뉴</span></div>
         </section>
       </div>
     </div>
@@ -69,7 +69,7 @@
   </section>
 
   <section id="tab-protocol" class="tab-panel document" hidden>
-    <div class="doc-heading"><div class="eyebrow">SORTIE I/O · v0.25</div><h2>출전은 동현랭으로, 전투는 키보드로.</h2><p>동현랭 프로그램이 출력한 정수를 차례로 읽는다. 명령 번호 하나 뒤에 값 하나가 온다. 마지막에 <code>6</code>을 출력해야 전장에 나간다. 전투가 시작된 뒤에는 동현랭을 쓰지 않는다.</p></div>
+    <div class="doc-heading"><div class="eyebrow">SORTIE I/O · v0.26</div><h2>출전은 동현랭으로, 전투는 키보드나 게임패드로.</h2><p>동현랭 프로그램이 출력한 정수를 차례로 읽는다. 명령 번호 하나 뒤에 값 하나가 온다. 마지막에 <code>6</code>을 출력해야 전장에 나간다. 전투가 시작된 뒤에는 동현랭을 쓰지 않는다.</p></div>
     <div class="table-wrap"><table><thead><tr><th>명령</th><th>하는 일</th><th>값</th><th>기본값</th></tr></thead><tbody>
       <tr><td>1</td><td>지도</td><td>1 첫 마을 · 2 강 건너 · 3 사막 오아시스 · 4 산맥 고개 · 5 늪과 숲 · 6 대평원 · 7 호숫가 마을 · 8 검은 숲 · 9 큰 강과 지류 · 10 해안 성채 · 11 세 섬 · 12 제국 대륙</td><td>1</td></tr>
       <tr><td>2</td><td>나의 문명</td><td>1 브리튼 · 2 프랑크 · 3 몽골 · 4 사라센 · 5 일본</td><td>1</td></tr>
@@ -101,6 +101,7 @@
       <tr><td><kbd>Shift</kbd></td><td>누르고 있는 동안 커서 아래 유닛의 공격 범위</td></tr>
       <tr><td><kbd>M</kbd></td><td>효과음 켜기·끄기(머리말 스피커 단추와 같다)</td></tr>
       <tr><td><kbd>Enter</kbd></td><td>메뉴: 턴 종료 · 저장 · 불러오기 · 항복</td></tr>
+      <tr><td><span class="pad-tag">게임패드</span></td><td>블루투스·USB 게임패드를 붙이면 닌텐도 배치로 그대로 쓴다. A=X키(확인), B=Z키(취소), X=S키(다음 유닛), Y=A키(정보), 십자·왼 스틱=방향키, L=Shift(사거리), +=Enter(메뉴). 동현AI<sup class="tm">TM</sup> 차례의 A·B는 빨리 감기. A·B가 뒤집혀 눌리는 패드는 −(Select)를 한 번 눌러 맞바꾼다</td></tr>
     </tbody></table></div>
     <div><h3>규칙 요약</h3><ul>
       <li>체력: 모든 유닛은 체력 100으로 시작한다. 지도에는 10으로 나눈 값(올림)을 작게 적는다.</li>
@@ -132,6 +133,6 @@
     <aside class="maker-note"><span class="eyebrow">만든 사람</span><p>인하대학교 의과대학 김동현 교수는 백신학·감염학을 연구한다. 동현워는 동현랭 시리즈의 여덟 번째 프로젝트이다.</p></aside>
   </section>
 </main>
-<footer><span>동현워 v0.25 · 인하대학교 의과대학 교수 김동현</span><span>1인용 대 동현AI<sup class="tm">TM</sup> · 제국 시대 · 안개 없음</span><span><a href="https://raspberry-kim.github.io/donghyun-lang/" target="_blank" rel="noopener">동현랭</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lang" target="_blank" rel="noopener">동현랭 GitHub</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lab7" target="_blank" rel="noopener">동현워 GitHub</a> · <a href="https://raspberry-kim.github.io/donghyun-lab1/" target="_blank" rel="noopener">동현초</a> · <a href="https://raspberry-kim.github.io/donghyun-lab2/" target="_blank" rel="noopener">동현파</a> · <a href="https://raspberry-kim.github.io/donghyun-lab3/" target="_blank" rel="noopener">동현빌</a> · <a href="https://raspberry-kim.github.io/donghyun-lab4/" target="_blank" rel="noopener">동현전</a> · <a href="https://raspberry-kim.github.io/donghyun-lab5/" target="_blank" rel="noopener">동현콥</a> · <a href="https://raspberry-kim.github.io/donghyun-lab6/" target="_blank" rel="noopener">동현텐</a> · <a href="https://raspberry-kim.github.io/donghyun-lab8/" target="_blank" rel="noopener">동현둠</a></span></footer>
+<footer><span>동현워 v0.26 · 인하대학교 의과대학 교수 김동현</span><span>1인용 대 동현AI<sup class="tm">TM</sup> · 제국 시대 · 안개 없음</span><span><a href="https://raspberry-kim.github.io/donghyun-lang/" target="_blank" rel="noopener">동현랭</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lang" target="_blank" rel="noopener">동현랭 GitHub</a> · <a href="https://github.com/Raspberry-Kim/donghyun-lab7" target="_blank" rel="noopener">동현워 GitHub</a> · <a href="https://raspberry-kim.github.io/donghyun-lab1/" target="_blank" rel="noopener">동현초</a> · <a href="https://raspberry-kim.github.io/donghyun-lab2/" target="_blank" rel="noopener">동현파</a> · <a href="https://raspberry-kim.github.io/donghyun-lab3/" target="_blank" rel="noopener">동현빌</a> · <a href="https://raspberry-kim.github.io/donghyun-lab4/" target="_blank" rel="noopener">동현전</a> · <a href="https://raspberry-kim.github.io/donghyun-lab5/" target="_blank" rel="noopener">동현콥</a> · <a href="https://raspberry-kim.github.io/donghyun-lab6/" target="_blank" rel="noopener">동현텐</a> · <a href="https://raspberry-kim.github.io/donghyun-lab8/" target="_blank" rel="noopener">동현둠</a></span></footer>
 <script src="./game.js"></script>
 </body></html>

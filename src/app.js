@@ -474,6 +474,11 @@ document.addEventListener('keydown',e=>{
   e.preventDefault(); key(k);
 });
 document.addEventListener('keyup',e=>{ if(S&&e.key==='Shift'&&mode==='idle'){ ui.atkSet=null; } });
+/* 게임패드: GP는 키보드 글자 이름(x·z·s·a)을 주므로, 키보드 처리와 같은 뒤집기(KeyX→z 확인, KeyZ→x 취소, KeyS→a, KeyA→s)를 거쳐 key()로 보낸다 */
+const GPKEY={x:'z',z:'x',s:'a',a:'s'};
+GP.start({repeat:true,hint:'A 확인 · B 취소 · X 다음 유닛 · Y 정보 · L 사거리 · + 메뉴',status:t=>status(t),
+  down(k){ if(!S||tab!=='play') return; if(k==='shift'){ if(mode==='idle'){ const u=E.unitAt(S,...ui.cursor); if(u){ ui.atkSet=rangeTiles(u); } } return; } key(GPKEY[k]||k); },
+  up(k){ if(S&&k==='shift'&&mode==='idle'){ ui.atkSet=null; } }});
 function key(k){
   if(!S) return;
   if(mode==='over'){ if(k==='z'||k==='enter') backToSetup(); return; }
