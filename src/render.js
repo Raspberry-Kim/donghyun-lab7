@@ -3,12 +3,12 @@
 const {UNITS,BUILDINGS}=root.DH_DATA;
 const T=16, PAD=4;
 const PAL={
-  1:{m:'#e5483a',d:'#9a2620',l:'#ff9f86'},
-  2:{m:'#3a78e8',d:'#1f3f99',l:'#97c0ff'},
-  0:{m:'#b9b1a2',d:'#7a7266',l:'#e2dccf'}
+  1:{m:'#c85347',d:'#7e3437',l:'#efa27f'},
+  2:{m:'#4b7faa',d:'#2e4b70',l:'#9dc4d7'},
+  0:{m:'#9a9b86',d:'#646e61',l:'#d7d6bb'}
 };
-const C={k:'#231d18',g:'#b4b2a8',G:'#6c6a62',w:'#f6f2e8',s:'#f1c493',S:'#c99a6a',y:'#f2b705',Y:'#a87a06',t:'#9a6634',T:'#5f3b1c',
-  h:'#9b6a3e',H:'#5e3a1f',c:'#d8b77a',C:'#a7864d',e:'#9aa0a6',E:'#686e75',r:'#3d2a1d',b:'#2c2722',o:'#e08a2e',n:'#f4ead2',R:'#6c2a1c',v:'#4a4038'};
+const C={k:'#302d29',g:'#b9c5c0',G:'#697e7e',w:'#fff0cc',s:'#e6bc91',S:'#b98b69',y:'#e5bc5a',Y:'#9c783b',t:'#b78d55',T:'#715538',
+  h:'#ae835b',H:'#6b503a',c:'#dac18b',C:'#ac8e5f',e:'#9eaeb1',E:'#647d84',r:'#574234',b:'#303c3e',o:'#ce884c',n:'#eee2bd',R:'#7e4539',v:'#526164'};
 
 /* ---- 유닛: 몸통 틀 + 덧그림 ----
    글자: m 진영색 · d 진영 어두운색 · l 밝은색 · k 윤곽 · s 피부 · g/G 쇠 · w 흰색 · t/T 나무 · h/H 말 · c/C 낙타 · e/E 코끼리 · y 금 · n 무명천 */
@@ -175,7 +175,35 @@ function unitPixels(type){
   if(extra==='cross'){ put(g,[[8,8,'w'],[7,9,'w'],[8,9,'w'],[9,9,'w'],[8,10,'w']]); }
   if(extra==='sash'){ put(g,[[7,10,'y'],[8,10,'y'],[9,10,'y']]); }
   if(L[0]==='eleph'){ put(g,[[8,4,'d'],[9,4,'m'],...line(10,0,10,4,'t'),[10,0,'w'],[11,6,'w'],[12,5,'k']]); }
+  // 옷·장비를 병종의 역할에 맞춰 나눈다. 머리·무기·탈것 윤곽은 유지한다.
+  if(L[0]==='foot'){
+    const plate=['champion','pike','arbalest','joan'].includes(type);
+    for(let y=8;y<=12;y++)for(let x=4;x<=10;x++){
+      if(!'mdl'.includes(g[y][x])) continue;
+      if(plate) g[y][x]=y===11?'d':x<7?'g':'G';
+      else if(['samurai','yoshitsune'].includes(type)) g[y][x]=y%2?'m':'b';
+      else if(['longbow','skirm','chukonu','axeman','berserk'].includes(type)) g[y][x]=x===6?'t':y===11?'T':g[y][x];
+      else if(type==='janissary') g[y][x]=x===7?'m':y>10?'n':'w';
+    }
+    if(plate) put(g,[[7,8,'m'],[8,8,'m'],[7,9,'m'],[7,10,'m'],[6,12,'d'],[8,12,'d']]);
+    if(extra==='shield') put(g,[[2,8,'k'],[3,8,'k'],[4,8,'k'],[2,9,'g'],[3,9,'l'],[4,9,'m'],[2,10,'g'],[3,10,'m'],[4,10,'d'],[2,11,'k'],[3,11,'m'],[4,11,'d'],[3,12,'k']]);
+    if(type==='longbow') put(g,[[3,5,'w'],[3,6,'t'],[3,7,'t'],[3,8,'T']]);
+  }
+  if(L[0]==='horse'||L[0]==='camel'){
+    put(g,[[5,11,'d'],[6,11,'m'],[7,11,'l'],[6,12,'m'],[7,12,'d']]);
+    if(['paladin','richard','templar'].includes(type)) put(g,[[7,8,'g'],[8,8,'g'],[8,9,'G'],[9,9,'m']]);
+  }
+  if(L[0]==='eleph') put(g,[[3,6,'m'],[4,6,'l'],[5,6,'m'],[3,7,'d'],[4,7,'y'],[5,7,'d'],[12,8,'w'],[13,9,'w']]);
   if(UNITS[type].hero) crown(g,ox,y0);
+  // 좌상단 광원: 단색 몸통·목재·금속에만 한 단계 밝은 면을 둔다.
+  const raw=g.map(r=>r.slice());
+  for(let y=1;y<T;y++)for(let x=0;x<T;x++){
+    const ch=raw[y][x],up=raw[y-1][x];
+    if(up==='k'||up==='.'){
+      if(ch==='m')g[y][x]='l';
+      if(ch==='g')g[y][x]='w';
+    }
+  }
   return g;
 }
 // 공성 무기
@@ -213,8 +241,11 @@ const cache={};
 function sprite(type,owner,gray){
   const k=type+owner+(gray?'g':''); if(cache[k]) return cache[k];
   const c=mk(T,T), x=c.getContext('2d'), P=PAL[owner], rows=unitPixels(type);
+  const material={...C};
+  if(['paladin','richard','templar'].includes(type)){ material.h='#cbd0c3';material.H='#8b9a95'; }
+  if(['mangudai','genghis'].includes(type)){ material.h='#8d6b50';material.H='#594b3e'; }
   for(let y=0;y<T;y++) for(let i=0;i<T;i++){ const ch=(rows[y]||[])[i]; if(!ch||ch==='.') continue;
-    let col=P[ch]||C[ch]; if(!col) continue; if(gray) col=grayify(col);
+    let col=P[ch]||material[ch]; if(!col) continue; if(gray) col=grayify(col);
     const px=owner===2?T-1-i:i; x.fillStyle=col; x.fillRect(px,y,1,1); }
   return cache[k]=c;
 }
@@ -224,10 +255,10 @@ function hash(x,y,s=0){ let h=(x*374761393+y*668265263+s*982451653)>>>0; h=(h^(h
 /* ---- 지형 ---- */
 /* 기본 색조(TC0)와 지도별 색조(THEMES). 지형·규칙은 그대로 두고 색과 작은 장식만 제목에 맞춘다.
    fl: 평지의 들꽃 색(null이면 없음) · flRate: 들꽃이 나는 칸의 비율(1/n) · snowDots: 평지에 눈 자국 · palm: 숲을 야자수처럼 */
-const TC0={grass:'#8fc85b',grassB:'#96cd63',grass2:'#7ab349',grass3:'#a6d872',tree:'#3f8a3a',tree2:'#2d6b2c',trunk:'#6b4a2c',
-  rock:'#a08467',rock2:'#7a604a',snow:'#f4efe4',water:'#4c8fd9',water2:'#3b78c4',wave:'#9cc6f2',sand:'#ead79a',sandB:'#e3cf8f',sand2:'#c9b06e',sand3:'#f4e6b6',
+const TC0={grass:'#a8b783',grassB:'#adbc89',grass2:'#91a271',grass3:'#c7d19e',tree:'#5d8056',tree2:'#385944',trunk:'#7a6041',
+  rock:'#a7997b',rock2:'#796f5c',snow:'#f2ead2',water:'#648e9c',water2:'#436d82',wave:'#b3d1d1',sand:'#dfc99b',sandB:'#e4cea3',sand2:'#b8a47b',sand3:'#eedcba',
   road:'#d3c7a6',road2:'#a39578',road3:'#e3d9bc',plank:'#b8854f',plank2:'#7d5530',plank3:'#d9a66a',foam:'#e8f4ff',deep:'#4384d0',bank:'#6f9c3e',river:'#5aa0e6',river2:'#3f86d2',
-  hill:'#7fb24f',hill2:'#5f8f3a',hill3:'#a9d173',hillK:'#41612a',swamp:'#5f7d4a',swamp2:'#4b6a3b',mud:'#6d6440',pool:'#5b8a8a',pool2:'#7fb0aa',reed:'#a5b56a',ford:'#86b9e8',stone:'#b8b2a4',
+  hill:'#a0aa75',hill2:'#7f905f',hill3:'#c4cba0',hillK:'#657959',swamp:'#78866b',swamp2:'#5a6d59',mud:'#81785b',pool:'#638e8e',pool2:'#a2bcb0',reed:'#b9bc7f',ford:'#9cbebd',stone:'#c2bcaa',
   cactus:'#6f9c3e',fl:['#ffd34d','#ffb3c7'],flRate:3,snowDots:false,palm:false};
 const THEMES={
   village:{},
@@ -269,7 +300,13 @@ const THEMES={
 };
 const TC={...TC0};
 let curTheme='village';
-function setTheme(name){ curTheme=THEMES[name]?name:'village'; Object.assign(TC,TC0,THEMES[curTheme]); }
+function mix(a,b,t){ const A=parseInt(a.slice(1),16),B=parseInt(b.slice(1),16);return '#'+[16,8,0].map(n=>Math.round(((A>>n)&255)*(1-t)+((B>>n)&255)*t).toString(16).padStart(2,'0')).join(''); }
+function setTheme(name){ curTheme=THEMES[name]?name:'village'; Object.assign(TC,TC0,THEMES[curTheme]);
+  // 지도마다의 색조를 남기고 흙·잎·물의 재질을 차분하게 맞춘다.
+  for(const key of ['grass','grassB','grass2','grass3','hill','hill2','hill3']) TC[key]=mix(TC[key],'#b7b18c',curTheme==='village'?0:.28);
+  for(const key of ['water','water2','deep','river','river2','ford']) TC[key]=mix(TC[key],'#557d87',.24);
+  TC.grassB=mix(TC.grass,TC.grassB,.5);
+}
 function themeOf(map){ if(map.theme) return map.theme; const m=root.DH_DATA.MAPS.find(m=>m.id===map.id); return m?m.theme:'village'; }
 const WATERY=t=>t==='river'||t==='ocean'||t==='bridge'||t==='ford';
 const isDesert=t=>t==='desert'||t==='droad';
@@ -278,21 +315,21 @@ function drawTerrain(g,map,x,y){
   const at=(dx,dy)=>{ const yy=y+dy,xx=x+dx; if(yy<0||xx<0||yy>=map.H||xx>=map.W) return null; return map.grid[yy][xx].t; };
   const atB=(dx,dy)=>{ const yy=y+dy,xx=x+dx; if(yy<0||xx<0||yy>=map.H||xx>=map.W) return null; return map.grid[yy][xx].b; };
   const R=(a,b,w,h,c)=>{ g.fillStyle=c; g.fillRect(X+a,Y+b,w,h); };
-  const grass=()=>{ R(0,0,T,T,(x+y)%2?TC.grass:TC.grassB); for(let i=0;i<3;i++){ const h=hash(x,y,i); R(h%14+1,(h>>>4)%14+1,1,1,TC.grass2); R((h>>>8)%14+1,(h>>>12)%14+1,1,1,TC.grass3);} };
-  const sand=()=>{ R(0,0,T,T,(x+y)%2?TC.sand:TC.sandB); for(let i=0;i<3;i++){ const h=hash(x,y,i+20); R(h%13+1,(h>>>4)%14+1,2,1,TC.sand2); R((h>>>8)%14+1,(h>>>12)%14+1,1,1,TC.sand3);} };
+  const grass=()=>{ R(0,0,T,T,(x+y)%2?TC.grass:TC.grassB); const h=hash(x,y,1); R(h%12+2,(h>>>4)%12+2,2,1,mix(TC.grass,TC.grass2,.55)); if(h%3===0)R((h>>>8)%12+2,(h>>>12)%12+2,1,2,mix(TC.grass,TC.grass3,.55)); };
+  const sand=()=>{ R(0,0,T,T,(x+y)%2?TC.sand:mix(TC.sand,TC.sandB,.4)); const h=hash(x,y,20); R(h%9+2,(h>>>4)%12+2,4,1,mix(TC.sand,TC.sand2,.5)); R(h%9+3,(h>>>4)%12+3,3,1,mix(TC.sand,TC.sand3,.65)); };
   const nearD=()=>[at(0,-1),at(0,1),at(-1,0),at(1,0)].filter(isDesert).length;
   const ground=()=>{ (isDesert(t)||(cell.b&&nearD()>=2))?sand():grass(); };
   const dry=()=>{ (nearD()>=2?sand:grass)(); }; // 사막 한가운데의 숲·언덕은 모래 위에
-  const sea=()=>{ R(0,0,T,T,TC.water); for(let i=0;i<T;i+=4) for(let j=(i/4)%2*2;j<T;j+=4) R(j,i,1,1,TC.deep);
-    const h=hash(x,y,7); R(h%10+2,(h>>>5)%10+3,3,1,TC.wave);
+  const sea=()=>{ const near=[at(0,-1),at(0,1),at(-1,0),at(1,0)].some(n=>n&&!WATERY(n)); R(0,0,T,T,near?mix(TC.water,TC.wave,.2):TC.deep);
+    const h=hash(x,y,7); if(h%3===0)R(h%9+3,(h>>>5)%10+3,4,1,mix(TC.water,TC.wave,.55));
     const land=(dx,dy)=>{ const n=at(dx,dy); return n && !WATERY(n); };
     if(land(0,-1)){ R(0,0,T,2,TC.sand); R(0,2,T,1,TC.foam); } if(land(0,1)){ R(0,T-2,T,2,TC.sand); R(0,T-3,T,1,TC.foam); }
-    if(land(-1,0)){ R(0,0,2,T,TC.sand); } if(land(1,0)){ R(T-2,0,2,T,TC.sand); } };
+    if(land(-1,0)){ R(0,0,2,T,TC.sand);R(2,2,1,T-4,TC.foam); } if(land(1,0)){ R(T-2,0,2,T,TC.sand);R(T-3,2,1,T-4,TC.foam); } };
   if(t==='plain'||t==='desert'){ ground(); if(t==='plain'){ const h=hash(x,y,11); if(TC.fl&&h%TC.flRate===0){ const fx=2+h%11, fy=3+(h>>>5)%10; R(fx,fy,1,1,'#fff7e0'); R(fx+1,fy+1,1,1,TC.fl[(h>>>9)%TC.fl.length]); }
       if(TC.snowDots&&h%5===1){ const sx=1+(h>>>3)%10, sy=1+(h>>>7)%11; R(sx,sy,4,2,TC.snow); R(sx+1,sy+2,2,1,TC.snow); } }
     else { const h=hash(x,y,12); if(h%4===0){ const fx=2+h%10, fy=4+(h>>>5)%8; R(fx,fy,1,3,TC.cactus); R(fx-1,fy+1,1,1,TC.cactus); R(fx+1,fy,1,1,TC.cactus); } } }
-  else if(t==='forest'){ dry(); const pp=bpal(0); R(1,13,14,2,'rgba(20,30,10,.22)'); for(const [a,b] of [[5,-3],[1,3],[8,4]]) stamp(g,TC.palm?PALM:TREE,X+a,Y+b,pp); }
-  else if(t==='mountain'){ grass(); stamp(g,MOUNTAIN,X,Y-4,bpal(0)); }
+  else if(t==='forest'){ dry(); const pp={...bpal(0),k:mix(TC.tree2,'#302d29',.25)}; R(1,13,14,2,'rgba(35,51,28,.18)'); for(const [a,b] of [[5,-3],[0,3],[8,4]]) stamp(g,TC.palm?PALM:TREE,X+a,Y+b,pp); }
+  else if(t==='mountain'){ grass(); stamp(g,MOUNTAIN,X,Y-4,{...bpal(0),k:TC.rock2,v:mix(TC.rock,TC.snow,.4)}); }
   else if(t==='hill'){ dry(); const pal={k:TC.hillK,a:TC.hill3,b:TC.hill,c:TC.hill2};
     stamp(g,['......kkkk......','....kkaaaakk....','...kaaabbbbbk...','..kabbbbbbbbck..','.kabbbbbbbbbcck.','kabbbbbbbbbbbcck','kbbbbbbbbbbbcccck'.slice(0,16),'.kkkkkkkkkkkkkk.'],X,Y+6,pal); }
   else if(t==='swamp'){ R(0,0,T,T,TC.swamp); const h=hash(x,y,31);
@@ -309,8 +346,10 @@ function drawTerrain(g,map,x,y){
     if(!up){ R(0,0,T,3,side); R(0,3,T,1,edge); } if(!dn){ R(0,T-3,T,3,side); R(0,T-4,T,1,edge); }
     if(!lf){ R(0,0,3,T,side); R(3,up?0:3,1,T-(up?0:3)-(dn?0:3),edge); } if(!rt){ R(T-3,0,3,T,side); R(T-4,up?0:3,1,T-(up?0:3)-(dn?0:3),edge); }
     if(!up&&!lf) R(0,0,4,4,side); if(!up&&!rt) R(T-4,0,4,4,side); if(!dn&&!lf) R(0,T-4,4,4,side); if(!dn&&!rt) R(T-4,T-4,4,4,side);
-    if(lf||rt){ const a=lf?0:7,b=rt?T:8; R(a,7,b-a,1,TC.road3); } if(up||dn){ const a=up?0:7,b=dn?T:8; R(7,a,1,b-a,TC.road3); }
-    const h=hash(x,y,9); R(4+h%8,4+(h>>>4)%8,1,1,edge); }
+    // 중세의 흙길: 밝은 발자국과 드문 디딤돌. 현대 도로의 중앙선과 구별한다.
+    if(lf||rt){ const a=lf?0:6,b=rt?T:10; R(a,6,b-a,3,mix(col,TC.road3,.5)); }
+    if(up||dn){ const a=up?0:6,b=dn?T:10; R(6,a,3,b-a,mix(col,TC.road3,.5)); }
+    const h=hash(x,y,9); R(4+h%7,5+(h>>>4)%6,3,1,TC.road3); R(4+h%7,6+(h>>>4)%6,2,1,mix(col,edge,.45)); }
   else if(t==='river'||t==='ford'||t==='bridge'){
     const wet=n=>n==='river'||n==='ford'||n==='bridge'||n==='ocean';
     grass(); R(0,0,T,T,t==='ford'?TC.ford:TC.river);
@@ -326,11 +365,11 @@ function drawTerrain(g,map,x,y){
   else grass();
   if(cell.b) drawBuilding(g,cell,X,Y);
 }
-const TREE=['..kkk..','.kaabk.','kaabbbk','kabbbck','kbbbcck','.kccck.','..kuk..','..kkk..'];
+const TREE=['..kkkk..','.kaabbk.','kaabbbck','kbbbbcck','kbbbccck','.kcccck.','..kuk...','..kkk...'];
 const PALM=['kb.k.bk','.kbkbk.','kbkakbk','.kkbkk.','...ku..','...ku..','..kuk..','..kkk..'];
-const MOUNTAIN=['................','.......kk.......','......kzzk......','.....kzzzRk.....','.....kzzrRk.....','....krrzrRRk....',
-'....krrrrRRk....','...krrrrrRRRk...','...krrrrrRRRk...','..krrrrrrRRRRk..','..krrrrrRRRRRk..','.krrrrrrRRRRRRk.',
-'.krrrrrrRRRRRRk.','krrrrrrrRRRRRRRk','krrrrrrRRRRRRRRk','kkkkkkkkkkkkkkkk','.SSSSSSSSSSSSSS.'];
+const MOUNTAIN=['................','.......kk.......','......kzzk......','.....kzzzRk.....','.....kzvrRk.....','....kvvzrRRk....',
+'....kvvrrRRk....','...kvvvrrRRRk...','...kvvrrrRRRk...','..kvvvrrrRRRRk..','..kvvrrvrRRRRk..','.kvvvrrvrRRRRRk.',
+'.kvvrrvrrRRRRRk.','kvvvrrvrrRRRRRRk','kvvrrvrrRRRRRRRk','kkkkkkkkkkkkkkkk','.SSSSSSSSSSSSSS.'];
 /* 건물 도트(칸보다 4px 높다). m/d/l 진영색 · w 벽(회반죽) · W 벽 그늘 · t/T 나무 · g/G 돌 · y 금 · S 그림자 */
 const BLD={
 tc:[
@@ -383,13 +422,20 @@ mine:[
 '.krkTbyybTkRRRk.','krrkTbbbbTkRRRk.','kkkkkkkkkkkkkkkk','.SSSSSSSSSSSSSS.']
 };
 function stamp(g,rows,X,Y,pal){ for(let y=0;y<rows.length;y++){ const r=rows[y]; for(let i=0;i<r.length;i++){ const ch=r[i]; if(ch==='.') continue; const c=pal[ch]||C[ch]; if(!c) continue; g.fillStyle=c; g.fillRect(X+i,Y+y,1,1); } } }
-function bpal(owner){ const P=PAL[owner||0]; return {m:P.m,d:P.d,l:P.l,S:'rgba(20,30,10,.28)',w:'#efe6d2',W:'#c9bda3',g:'#bdb6a8',G:'#8d8578',
-  r:TC.rock,R:TC.rock2,z:TC.snow,u:TC.trunk,a:TC.grass3,b:TC.tree,c:TC.tree2,t:'#a06c3a',T:'#5f3b1c',y:'#f2b705',Y:'#c48f12',o:'#e08a2e'}; }
+function bpal(owner){ const P=PAL[owner||0]; return {m:P.m,d:P.d,l:P.l,S:'rgba(20,30,10,.22)',w:'#f0e4c9',W:'#bdaf91',g:'#c4bfac',G:'#92947e',
+  r:TC.rock,R:TC.rock2,z:TC.snow,u:TC.trunk,a:mix(TC.tree,TC.grass3,.45),b:TC.tree,c:TC.tree2,t:'#a06c3a',T:'#5f3b1c',y:'#e5bc5a',Y:'#b38a42',o:'#ce884c'}; }
 function drawBuilding(g,cell,X,Y){
   const b=cell.b, rows=BLD[b.type], pal=bpal(b.owner);
+  pal.k='#494639';
   if(b.type==='farm'){ pal.Y='#8aa83f'; pal.y='#c9b45a'; pal.t='#a07f3e'; }
   if(b.type==='mine'){ pal.b='#2c2722'; }
+  if(!['farm','mine'].includes(b.type)){
+    g.fillStyle=mix(TC.road,TC.grass,.35);g.fillRect(X+1,Y+11,14,4);
+  }
   stamp(g,rows,X,Y+T-rows.length,pal);
+  if(['castle','tower','barracks'].includes(b.type)){
+    g.fillStyle=pal.G;g.fillRect(X+6,Y+7,3,1);g.fillRect(X+9,Y+10,3,1);
+  }
 }
 function terrainLayer(map){
   setTheme(themeOf(map));
@@ -400,6 +446,27 @@ function terrainLayer(map){
 const DIG={0:['111','101','101','101','111'],1:['010','110','010','010','111'],2:['111','001','111','100','111'],3:['111','001','111','001','111'],4:['101','101','111','001','001'],5:['111','100','111','001','111'],6:['111','100','111','101','111'],7:['111','001','010','010','010'],8:['111','101','111','101','111'],9:['111','101','111','001','111']};
 function digit(g,n,x,y,col){ const s=String(n); let ox=x; for(const ch of s){ const d=DIG[ch]; g.fillStyle=C.k; g.fillRect(ox-1,y-1,5,7); g.fillStyle=col||C.w;
   for(let r=0;r<5;r++) for(let i=0;i<3;i++) if(d[r][i]==='1') g.fillRect(ox+i,y+r,1,1); ox+=4; } }
+const rimCache=new Map();
+function unitRim(spr){
+  if(rimCache.has(spr))return rimCache.get(spr);
+  const c=mk(T+2,T+2),g=c.getContext('2d');
+  for(const [x,y] of [[0,1],[2,1],[1,0],[1,2]])g.drawImage(spr,x,y);
+  g.globalCompositeOperation='source-in';g.fillStyle='#f5e9c9';g.fillRect(0,0,T+2,T+2);
+  rimCache.set(spr,c);return c;
+}
+function teamMark(g,owner,x,y){
+  g.fillStyle=C.k;g.fillRect(x,y,5,4);g.fillStyle=PAL[owner].l;
+  if(owner===1)g.fillRect(x+1,y+1,3,2);
+  else {g.fillRect(x+2,y,1,1);g.fillRect(x+1,y+1,3,2);g.fillRect(x+2,y+3,1,1);}
+}
+function rangeTiles(g,set,attack){
+  for(const k of set){const x=(k%1000)*T,y=Math.floor(k/1000)*T;
+    g.fillStyle=attack?'rgba(200,83,71,.24)':'rgba(94,165,189,.24)';g.fillRect(x,y,T,T);
+    g.fillStyle=attack?'#9e3e39':'#3d778a';
+    if(attack){for(const [a,b] of [[1,1],[12,1],[1,12],[12,12]]){g.fillRect(x+a,y+b,3,1);g.fillRect(x+a,y+b,1,3);}}
+    else {g.fillRect(x+1,y+1,14,1);g.fillRect(x+1,y+14,14,1);g.fillRect(x+1,y+1,1,14);g.fillRect(x+14,y+1,1,14);}
+  }
+}
 // 지형 키: 건물 주인·체력이 바뀌면 지형층을 다시 그린다
 function terrainKey(map){ let s=''; for(const r of map.grid) for(const c of r) if(c.b) s+=c.b.owner; return s; }
 
@@ -415,8 +482,8 @@ function draw(g, s, ui, now){
   // 건물 체력(100 아래일 때 막대)
   for(let y=0;y<map.H;y++) for(let x=0;x<map.W;x++){ const b=map.grid[y][x].b; if(!b||b.hp>=100) continue;
     g.fillStyle=C.k; g.fillRect(x*T+1,y*T-3,14,3); g.fillStyle=b.hp>50?'#7fd04b':b.hp>25?'#f2b705':'#e5483a'; g.fillRect(x*T+2,y*T-2,Math.max(1,Math.round(12*b.hp/100)),1); }
-  if(ui.moveSet){ g.fillStyle='rgba(120,190,255,.48)'; for(const k of ui.moveSet){ g.fillRect((k%1000)*T,Math.floor(k/1000)*T,T,T);} }
-  if(ui.atkSet){ g.fillStyle='rgba(240,70,50,.42)'; for(const k of ui.atkSet){ g.fillRect((k%1000)*T,Math.floor(k/1000)*T,T,T);} }
+  if(ui.moveSet) rangeTiles(g,ui.moveSet,false);
+  if(ui.atkSet) rangeTiles(g,ui.atkSet,true);
   if(ui.helpSet){ g.fillStyle='rgba(120,230,140,.45)'; for(const k of ui.helpSet){ g.fillRect((k%1000)*T,Math.floor(k/1000)*T,T,T);} }
   if(ui.spots){ g.fillStyle='rgba(255,220,80,.55)'; for(const [x,y] of ui.spots) g.fillRect(x*T,y*T,T,T); }
   if(ui.path && ui.path.length>1){
@@ -436,9 +503,11 @@ function draw(g, s, ui, now){
     const rx=Math.round(px), ry=Math.round(py), tc=u.owner===1?'rgba(229,72,58,.6)':'rgba(58,120,232,.6)';
     g.fillStyle='rgba(15,20,10,.25)'; g.fillRect(rx+3,ry+15,10,1);
     g.fillStyle=tc; g.fillRect(rx+2,ry+14,12,1);
+    g.drawImage(unitRim(spr),rx-1,ry-bob-1);
     g.drawImage(spr,rx,ry-bob);
+    teamMark(g,u.owner,rx,ry+12);
     const hp=Math.ceil(u.hp/10);
-    if(hp<10) digit(g,hp,u.owner===2?rx+1:rx+12,ry+10);
+    if(hp<10) digit(g,hp,rx+12,ry+10);
   }
   ui.fx=(ui.fx||[]).filter(f=>now-f.t0<f.dur);
   for(const f of ui.fx){ const p=(now-f.t0)/f.dur, X=f.x*T, Y=f.y*T;

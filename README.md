@@ -66,6 +66,10 @@ Age of Empires는 Microsoft Corporation의 상표다. 동현워는 Microsoft, Ma
 node build.cjs   # dist/index.html과 루트 index.html(GitHub Pages용) 단일 파일 생성
 ```
 
+## 그림 검사
+
+`node qa/design.cjs`로 지도 12개와 일반 27병종·영웅 5명의 양 진영·행동 완료 그림을 확인한다. 생산·이동·전투·저장·불러오기·전체 화면과 휴대폰 화면도 검사하며, 비교 화면과 결과는 `qa/design-output/`에 남긴다. Playwright와 Chromium이 필요하다.
+
 ## 라이선스
 
 코드·문서·그림: MIT (김동현). 동현랭 실행기: MIT. 글꼴: Black Han Sans, 나눔고딕코딩, Pretendard — 각각 SIL OFL 1.1 (`licenses/`).
