@@ -101,7 +101,7 @@ a.series-item:hover{background:#fff0c6;border-color:#b99542;transform:translateY
 .board-stage{position:relative;border-radius:8px;overflow:hidden;line-height:0}
 #board{border-radius:8px}
 #board{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges}
-.game-menu{position:absolute;min-width:150px;background:var(--paper);border:2px solid var(--ink);border-radius:8px;box-shadow:4px 4px 0 rgba(0,0,0,.35);padding:6px;line-height:1.4;z-index:3;max-height:92%;overflow:auto}
+.game-menu{position:absolute;min-width:150px;background:var(--paper);color:var(--ink);border:2px solid var(--ink);border-radius:8px;box-shadow:4px 4px 0 rgba(0,0,0,.35);padding:6px;line-height:1.4;z-index:3;max-height:92%;overflow:auto}
 .game-menu h4{margin:2px 6px 6px;font:700 var(--text-xs) var(--body);color:var(--muted)}
 .game-menu .mi{display:flex;justify-content:space-between;gap:14px;padding:6px 10px;border-radius:5px;font-size:var(--text-sm);cursor:pointer;white-space:nowrap}
 .game-menu .mi.sel{background:var(--accent);color:#26211c;font-weight:700}
@@ -111,7 +111,7 @@ a.series-item:hover{background:#fff0c6;border-color:#b99542;transform:translateY
 .banner small{display:block;font:500 var(--text-sm) var(--body);margin-top:4px;opacity:.85}
 .banner.p1{background:rgba(184,50,31,.86)}.banner.p2{background:rgba(35,64,143,.86)}.banner.power{background:rgba(242,183,5,.92);color:#26211c}
 .result-card{position:absolute;inset:0;display:grid;place-items:center;background:rgba(25,22,19,.6);z-index:4;line-height:1.5}
-.result-card>div{background:var(--paper);border-radius:14px;padding:22px 26px;max-width:min(420px,90%);text-align:center;border:2px solid var(--ink)}
+.result-card>div{background:var(--paper);color:var(--ink);border-radius:14px;padding:22px 26px;max-width:min(420px,90%);text-align:center;border:2px solid var(--ink)}
 .result-card h3{font:400 clamp(1.4rem,3vw,2rem) var(--display);margin-bottom:6px}
 .result-card p{font-size:var(--text-sm);color:var(--muted);margin-bottom:12px}
 .result-card dl{display:grid;grid-template-columns:auto auto auto;gap:2px 14px;font:var(--text-xs) var(--mono);margin:0 auto 14px;justify-content:center}
@@ -125,7 +125,7 @@ a.series-item:hover{background:#fff0c6;border-color:#b99542;transform:translateY
 .dpad [data-key=ArrowLeft] svg{transform:rotate(-90deg)}.dpad [data-key=ArrowRight] svg{transform:rotate(90deg)}.dpad [data-key=ArrowDown] svg{transform:rotate(180deg)}
 .dpad::after{content:'';grid-column:2;grid-row:2;width:8px;height:8px;border-radius:50%;background:var(--line);place-self:center}
 .pad-keys{display:grid;grid-template-columns:repeat(3,56px);gap:6px}
-.pad-keys button{padding:0;min-height:50px;border:0;border-radius:14px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1;font:700 15px var(--mono)}
+.pad-keys button{padding:0;min-height:50px;border:0;border-radius:14px;background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1;font:700 15px var(--mono)}
 .pad-keys button:active{background:var(--surface2)}.pad-keys small{font:400 10px var(--body);color:var(--muted)}
 .pad-keys [data-key=x]{background:var(--accent);box-shadow:none;color:#26211c}.pad-keys [data-key=x] small{color:#26211c;opacity:.7}
 .pad-keys svg{width:16px;height:16px;display:block}

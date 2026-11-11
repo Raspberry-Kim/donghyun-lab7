@@ -88,6 +88,11 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
   await p.waitForFunction(()=>{const s=JSON.parse(render_game_to_text());return s.turn===1&&s.day>=2&&s.mode==='idle'&&document.querySelector('#banner').hidden},null,{timeout:120000});
   ok('AI 차례 후 다음 날 내 차례');
   await p.click('#full');await p.waitForFunction(()=>document.querySelector('#stage-full').classList.contains('fs'));
+  await p.locator('#board-wrap').focus();await p.keyboard.press('Enter');await p.waitForSelector('#menu .mi');
+  const fsMenu=await p.evaluate(()=>{const m=document.querySelector('#menu'),ink=getComputedStyle(m).getPropertyValue('--ink').trim();const hex=c=>'#'+c.match(/\d+/g).slice(0,3).map(v=>(+v).toString(16).padStart(2,'0')).join('');return {ink,menu:hex(getComputedStyle(m).color),items:[...m.querySelectorAll('.mi:not(.sel)')].map(e=>hex(getComputedStyle(e).color)),pads:[...document.querySelectorAll('.pad-keys button')].filter(e=>getComputedStyle(e).backgroundColor===getComputedStyle(m).backgroundColor).map(e=>hex(getComputedStyle(e).color))}});
+  assert.equal(fsMenu.menu,fsMenu.ink,'fullscreen menu ink');for(const c of [...fsMenu.items,...fsMenu.pads]) assert.equal(c,fsMenu.ink,'fullscreen item ink');
+  await p.screenshot({path:path.join(out,'fullscreen-menu.png')});await p.keyboard.press('z');await p.waitForFunction(()=>!document.querySelector('#menu .mi')||document.querySelector('#menu').hidden);
+  ok('전체 화면 메뉴·터치 단추 글자색이 종이색 바탕용 잉크색');
   await p.screenshot({path:path.join(out,'fullscreen.png')});await p.click('#exit-full');
   await p.waitForFunction(()=>!document.querySelector('#stage-full').classList.contains('fs'));ok('전체 화면 열기·닫기');
   for(const tab of ['protocol','rules','about','play']){await p.click('[data-tab="'+tab+'"]');assert.equal(await p.locator('[data-tab="'+tab+'"]').getAttribute('aria-current'),'page')}
