@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata below."
 title: "Donghyunwar (동현워): a single-player medieval turn-based tactics laboratory against the computer, set up through the esoteric language Donghyun-lang"
 type: software
-version: "0.31"
-date-released: "2026-11-03"
+version: "0.32"
+date-released: "2026-11-11"
 doi: "10.5281/zenodo.23793857"
 authors:
   - family-names: Kim
@@ -23,7 +23,7 @@ abstract: >-
   Gamepad API (Nintendo layout: A = X key confirm, B = Z key cancel, X = S key
   next unit, Y = A key info, d-pad or left stick = arrows, + = Enter, L =
   Shift), or with on-screen buttons. It includes five civilizations, 27 unit
-  types plus five heroes, six original maps, building income and production,
+  types plus five heroes, 12 original maps, building income and production,
   monks that heal and convert, market mercenaries, an approximate damage
   formula, a heuristic computer opponent, and saving and loading. Its rule
   framework and unit names and numbers follow the Nintendo DS game Age of

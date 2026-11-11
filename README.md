@@ -1,4 +1,4 @@
-# 동현워 v0.31
+# 동현워 v0.32
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23793857.svg)](https://doi.org/10.5281/zenodo.23793857)
 
