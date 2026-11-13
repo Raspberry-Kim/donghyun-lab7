@@ -463,7 +463,8 @@ function rangeTiles(g,set,attack){
   for(const k of set){const x=(k%1000)*T,y=Math.floor(k/1000)*T;
     g.fillStyle=attack?'rgba(200,83,71,.24)':'rgba(94,165,189,.24)';g.fillRect(x,y,T,T);
     g.fillStyle=attack?'#9e3e39':'#3d778a';
-    if(attack){for(const [a,b] of [[1,1],[12,1],[1,12],[12,12]]){g.fillRect(x+a,y+b,3,1);g.fillRect(x+a,y+b,1,3);}}
+    // 범위 보기(Shift·적 유닛 누르기)는 색만 칠하고 칸마다의 모서리 표시를 그리지 않는다
+    if(attack){if(!set.view)for(const [a,b] of [[1,1],[12,1],[1,12],[12,12]]){g.fillRect(x+a,y+b,3,1);g.fillRect(x+a,y+b,1,3);}}
     else {g.fillRect(x+1,y+1,14,1);g.fillRect(x+1,y+14,14,1);g.fillRect(x+1,y+1,1,14);g.fillRect(x+14,y+1,1,14);}
   }
 }

@@ -381,7 +381,7 @@ function rangeTiles(u){
     if(E.has(u,'noMA')&&(x!==u.x||y!==u.y)) continue;
     const r=E.rangeOf(S,u,x,y);
     for(let dy=-r[1];dy<=r[1];dy++) for(let dx=-r[1];dx<=r[1];dx++){ const d=Math.abs(dx)+Math.abs(dy), nx=x+dx, ny=y+dy; if(d>=r[0]&&d<=r[1]&&nx>=0&&ny>=0&&nx<S.map.W&&ny<S.map.H) set.add(E.key(nx,ny)); } }
-  return set;
+  set.view=true; return set;
 }
 function select(u){
   sel=u; orig={x:u.x,y:u.y}; reachR=E.reach(S,u); mode='move';
