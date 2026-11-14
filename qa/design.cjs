@@ -92,7 +92,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
   const fsMenu=await p.evaluate(()=>{const m=document.querySelector('#menu'),ink=getComputedStyle(m).getPropertyValue('--ink').trim();const hex=c=>'#'+c.match(/\d+/g).slice(0,3).map(v=>(+v).toString(16).padStart(2,'0')).join('');return {ink,menu:hex(getComputedStyle(m).color),items:[...m.querySelectorAll('.mi:not(.sel)')].map(e=>hex(getComputedStyle(e).color)),pads:[...document.querySelectorAll('.pad-keys button')].filter(e=>getComputedStyle(e).backgroundColor===getComputedStyle(m).backgroundColor).map(e=>hex(getComputedStyle(e).color))}});
   assert.equal(fsMenu.menu,fsMenu.ink,'fullscreen menu ink');for(const c of [...fsMenu.items,...fsMenu.pads]) assert.equal(c,fsMenu.ink,'fullscreen item ink');
   await p.screenshot({path:path.join(out,'fullscreen-menu.png')});await p.keyboard.press('z');await p.waitForFunction(()=>!document.querySelector('#menu .mi')||document.querySelector('#menu').hidden);
-  ok('전체 화면 메뉴·터치 단추 글자색이 종이색 바탕용 잉크색');
+  ok('전체 화면 메뉴·터치 버튼 글자색이 종이색 바탕용 잉크색');
   await p.screenshot({path:path.join(out,'fullscreen.png')});await p.click('#exit-full');
   await p.waitForFunction(()=>!document.querySelector('#stage-full').classList.contains('fs'));ok('전체 화면 열기·닫기');
   for(const tab of ['protocol','rules','about','play']){await p.click('[data-tab="'+tab+'"]');assert.equal(await p.locator('[data-tab="'+tab+'"]').getAttribute('aria-current'),'page')}
@@ -106,7 +106,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
   }
   const prevCursor=(await state()).cursor;
   await p.setViewportSize({width:375,height:812});await p.locator('#touchpad [data-key="ArrowRight"]').click();
-  assert.notDeepEqual((await state()).cursor,prevCursor);ok('375px·짧은 데스크톱·다시 넓은 화면·화면 방향 단추');
+  assert.notDeepEqual((await state()).cursor,prevCursor);ok('375px·짧은 데스크톱·다시 넓은 화면·화면 방향 버튼');
   const timing=await p.evaluate(()=>new Promise(resolve=>{let prev=performance.now(),times=[];function tick(now){times.push(now-prev);prev=now;if(times.length<61)requestAnimationFrame(tick);else resolve(times.slice(1).sort((a,b)=>a-b)[30])}requestAnimationFrame(tick)}));
   assert(timing<50,'frame median '+timing);ok('중앙 프레임 간격 '+timing.toFixed(1)+'ms');
   assert.deepEqual(errors,[]);ok('브라우저 오류 없음');

@@ -137,7 +137,7 @@ function size(s){ canvas.width=s.map.W*R.T; canvas.height=s.map.H*R.T+R.PAD; fit
 function fit(){
   if(!canvas.width) return;
   const full=document.getElementById('stage-full');
-  if(full&&full.classList.contains('fs')){ /* 전체 화면: 띠와 화면 단추를 뺀 자리에 비율을 지켜 최대로 */
+  if(full&&full.classList.contains('fs')){ /* 전체 화면: 띠와 화면 버튼을 뺀 자리에 비율을 지켜 최대로 */
     const side=full.classList.contains('side'), cs=getComputedStyle(full), h=el=>el&&el.offsetHeight||0;
     let aw=full.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight), ah=full.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
     if(side) aw-=2*190+20; else ah-=h(full.querySelector('.board-top'))+h(full.querySelector('.board-bottom'))+h(full.querySelector('.touchpad'))+30;
