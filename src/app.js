@@ -6,7 +6,7 @@ const $=s=>document.querySelector(s), E=window.Engine, AI=window.AI, R=window.Re
 const canvas=$('#board'), g=canvas.getContext('2d');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-// 컴퓨터 상대의 이름. 글자로 넣는 곳은 AI_T, HTML로 그리는 곳은 AI_H(TM 위첨자)
+// 상대(동현AI™)의 이름. 글자로 넣는 곳은 AI_T, HTML로 그리는 곳은 AI_H(TM 위첨자)
 const AI_T='동현AI™', AI_H='동현AI<sup class="tm">TM</sup>';
 const MAPNAME=id=>MAPS.find(m=>m.id===id).name;
 const civName=n=>CIVS[n-1].name;
