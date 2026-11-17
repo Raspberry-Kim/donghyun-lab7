@@ -18,6 +18,12 @@
 - 지도 12종(7~12번은 원작 지도의 짜임만 참고해 새로 그렸고, 원작 지도의 칸 배치는 옮기지 않았다), 피해 근사식, 동현AI™의 판단 규칙, 모든 도트 그림(지형·건물·유닛), 동현랭 출전 규약, 예제, 문서.
 - 동현랭 실행기(`src/donghyun.js`)는 [동현랭 저장소](https://github.com/Raspberry-Kim/donghyun-lang)의 v1.55을 고치지 않고 썼다.
 
+## 승리 팡파르
+
+- 선율은 에드워드 엘가의 「위풍당당 행진곡」 1번(Op. 39 No. 1, 1901년 작곡·출판)의 트리오 첫 줄이다. 악보는 공공 영역이다([IMSLP의 작품 면](https://imslp.org/wiki/Pomp_and_Circumstance_March_No.1,_Op.39_No.1_(Elgar,_Edward))).
+- 녹음이나 연주 음원을 쓰지 않았다. 음높이와 박자를 `src/sfx.js`에 적고 브라우저에서 합성한다. 조는 마지막 재현부의 D장조이고 빠르기와 악기 배치는 동현워이 정했다.
+- 음을 대조한 악보: [G Major Music Theory의 쉬운 편곡](https://gmajormusictheory.org/Freebies/Level4/4Pomp/4Pomp.pdf), [IMSLP의 피아노 편곡](https://s9.imslp.org/files/imglnks/usimg/b/b7/IMSLP833625-PMLP898174-Elgar_Nacar_Pomp_and_Circumstance_1.pdf), [Hymnary의 선율 기록](https://hymnary.org/tune/land_of_hope_and_glory_elgar).
+
 ## 이용 조건
 
 - **앱 코드·문서·그림:** MIT ([LICENSE](LICENSE)). 저작권 © 2026 김동현. 이 라이선스는 원작의 이름·수치·상표에 대한 권리를 주지 않는다.

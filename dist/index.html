@@ -2050,7 +2050,7 @@ const examples=[
 
 ;
 /* 합성 효과음: 소리 파일 없이 Web Audio로 그 자리에서 만든다.
-   발소리·말발굽·바퀴·궤도·배·비행·점령 환호·상대 점령 알림·승리 딩동댕·패배 땡, 공격·반격·격파, 동현텐의 짧은 소리.
+   발소리·말발굽·바퀴·궤도·배·비행·점령 환호·상대 점령 알림·승리 팡파르·딩동댕·패배 땡, 공격·반격·격파, 동현텐의 짧은 소리.
    브라우저 규칙에 따라 첫 클릭·터치·키 입력 뒤에 소리 장치를 연다. */
 var DHSFX=function(storeKey){
   'use strict';
@@ -2085,6 +2085,11 @@ var DHSFX=function(storeKey){
     o.connect(g); g.connect(out||master); o.start(t); o.stop(t+(a||0.01)+dur+0.05); return o;
   }
   function bus(peak){ var g=ctx.createGain(); g.gain.value=peak; g.connect(master); return g; }
+  /* 팡파르만 따로 묶어, 소리를 끄거나 결과 화면을 떠날 때 바로 줄인다 */
+  var fan=null, fanEnd=0, played=[];
+  function hush(){ if(!fan||!ctx) return; var g=fan, u=ctx.currentTime; fan=null;
+    try{ g.gain.cancelScheduledValues(u); g.gain.setValueAtTime(g.gain.value,u); g.gain.linearRampToValueAtTime(0,u+0.12); }catch(e){}
+    setTimeout(function(){ try{ g.disconnect(); }catch(e){} },400); }
   var S={
     foot:function(t,dur,heavy){ var n=Math.max(2,Math.min(6,Math.round(dur/0.16))); for(var i=0;i<n;i++){ var u=t+i*0.16+(i%2)*0.012;
       noise(u,0.06,'lowpass',heavy?600:900,0,0.5); var o=tone(u,'sine',heavy?95:120,0.08,0.45,0.004); o.frequency.exponentialRampToValueAtTime(55,u+0.08); } },
@@ -2143,18 +2148,102 @@ var DHSFX=function(storeKey){
     rows:function(t){ S.bell(t,659.25,0.3,0.4); S.bell(t+0.1,987.77,0.45,0.4); },
     swish:function(t){ var f=noise(t,0.32,'bandpass',500,1.5,0.45,0.04); f.frequency.linearRampToValueAtTime(2400,t+0.3); },
     sparkle:function(t){ [1318.5,1568,2093].forEach(function(f,i){ S.bell(t+i*0.06,f,0.25,0.18); }); },
-    over:function(t){ S.bell(t,523.25,0.4,0.4); S.bell(t+0.22,392,0.4,0.4); S.bell(t+0.44,261.63,0.9,0.45); }
+    over:function(t){ S.bell(t,523.25,0.4,0.4); S.bell(t+0.22,392,0.4,0.4); S.bell(t+0.44,261.63,0.9,0.45); },
+    /* 승리 팡파르(약 10초): 엘가 〈위풍당당 행진곡〉 1번(1901) 트리오 가락의 첫 줄을 라장조로 옮겨 금관·저음·팀파니 소리로 합성한다. 녹음은 쓰지 않는다.
+       가락·화음·저음은 악보를 따른다(마디마다 두 번 짚는 화음, 차례로 오르는 저음). 넷째 마디는 조금 늦추고, 다음 줄의 첫 으뜸화음에서 맺는다.
+       음은 MIDI 번호(69 = 가온 라 440Hz), 길이는 박으로 적는다 */
+    pomp:function(t){ hush(); var out=fan=ctx.createGain(); out.gain.value=0.85; out.connect(master);
+      var pre=ctx.createGain(), dl=ctx.createDelay(0.5), fb=ctx.createGain(), wet=ctx.createGain(); dl.delayTime.value=0.115; fb.gain.value=0.28; wet.gain.value=0.22;
+      pre.connect(out); pre.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(out);
+      var B=0.53, at=function(b){ return t+(b<=12?b*B:12*B+(b-12)*B*(1+0.05*(b-12))); }, hz=function(m){ return 440*Math.pow(2,(m-69)/12); };
+      function horn(b,len,m,peak,cut){ var u=at(b), d=at(b+len)-u-0.035, lp=ctx.createBiquadFilter(), g=ctx.createGain(); lp.type='lowpass'; lp.Q.value=0.7;
+        lp.frequency.setValueAtTime(cut*0.4,u); lp.frequency.linearRampToValueAtTime(cut,u+0.07); lp.frequency.setTargetAtTime(cut*0.62,u+0.07,0.3);
+        g.gain.setValueAtTime(0.0001,u); g.gain.linearRampToValueAtTime(peak,u+0.04); g.gain.setTargetAtTime(peak*0.8,u+0.04,0.25); g.gain.setTargetAtTime(0.0001,u+d,0.05);
+        [-5,5].forEach(function(c){ var o=ctx.createOscillator(); o.type='sawtooth'; o.frequency.value=hz(m); o.detune.value=c; o.connect(lp); o.start(u); o.stop(u+d+0.4); });
+        lp.connect(g); g.connect(pre); }
+      function timp(b,m,peak){ var u=at(b), o=tone(u,'sine',hz(m)*1.1,0.5,peak,0.004,pre); o.frequency.exponentialRampToValueAtTime(hz(m),u+0.06); noise(u,0.07,'lowpass',700,0,peak*0.5,0.002,pre); }
+      function crash(b,peak,dur){ var u=at(b); noise(u,dur,'highpass',4800,0,peak,0.004,pre); noise(u,dur*0.6,'bandpass',2600,0.6,peak*0.5,0.004,pre);
+        var o=tone(u,'sine',58,0.45,peak*1.5,0.004,pre); o.frequency.exponentialRampToValueAtTime(34,u+0.45); }
+      /* 가락: 한 옥타브 위를 겹쳐 트럼펫처럼 밝게 한다 */
+      [[74,0,2],[73,2,0.5],[74,2.5,0.5],[76,3,1],[71,4,2],[69,6,2],[67,8,2],[66,10,0.5],[67,10.5,0.5],[69,11,1],[64,12,4],[66,16,1.4]].forEach(function(n){
+        horn(n[1],n[2],n[0],0.2,2500); horn(n[1],n[2],n[0]+12,0.1,3300); });
+      /* 화음(박마다 다시 짚는다)과 저음 */
+      var CH=[[57,62,66],[57,62,66],[57,61,64],[57,61,64],[59,62,66],[59,62,66],[57,62,66],[57,62,66],[59,62,67],[59,62,67],[57,62,66],[57,62,66],[56,62,64],[56,62,64],[55,61,64],[55,61,64]],
+          BS=[38,38,40,40,42,42,42,45,43,43,45,45,47,47,45,45];
+      CH.forEach(function(c,b){ c.forEach(function(m){ horn(b,0.94,m,0.065,1300); }); horn(b,0.94,BS[b],0.2,520); horn(b,0.94,BS[b]+12,0.085,760); });
+      [57,62,66,69,74].forEach(function(m){ horn(16,1.4,m,0.085,1700); }); horn(16,1.4,38,0.22,520); horn(16,1.4,50,0.1,760);
+      /* 팀파니·심벌즈·작은북: 첫 박과 마디 머리를 짚고, 끝 두 박에서 굴려 마지막 화음으로 몰아간다 */
+      crash(0,0.16,0.9); timp(0,50,0.5); timp(4,50,0.3); timp(8,50,0.36); timp(12,52,0.3);
+      for(var i=0;i<12;i++){ var b=14+i/6, k=i/11; timp(b,45,0.1+0.3*k); noise(at(b),0.05,'bandpass',1900,0.7,0.05+0.2*k,0.002,pre); }
+      crash(16,0.28,1.1); timp(16,50,0.5); fanEnd=performance.now()+(at(17.4)+0.5-ctx.currentTime)*1000;
+    }
   };
   var MT={foot:'foot',mech:'mech',horse:'horse',tire:'tire',tread:'tread',siege:'siege',ship:'ship',lander:'ship',air:'air'};
   return {
     get on(){ return on; },
-    set:function(v){ on=!!v; try{ localStorage.setItem(storeKey,on?'on':'off'); }catch(e){} if(on) unlock(); },
+    set:function(v){ on=!!v; try{ localStorage.setItem(storeKey,on?'on':'off'); }catch(e){} if(on) unlock(); else hush(); },
     /* 유닛 이동: mt는 이동 방식, dur는 화면 이동 시간(초), copter는 헬기 여부 */
     move:function(mt,dur,copter){ if(!ready()) return; var t=ctx.currentTime+0.01, k=copter?'copter':MT[mt];
       if(k==='mech') S.foot(t,dur,true); else if(S[k]) S[k](t,dur); },
-    play:function(k,delay){ if(!ready()||!S[k]) return; S[k](ctx.currentTime+0.01+(delay||0)); }
+    play:function(k,delay){ if(!ready()||!S[k]) return; played.push(k); if(played.length>40) played.shift(); S[k](ctx.currentTime+0.01+(delay||0)); },
+    /* 팡파르를 멈춘다(짧은 효과음은 그대로 둔다) */
+    stop:function(){ hush(); },
+    /* 실제로 낸 소리의 이름(최근 40개). 시험이 읽는다 */
+    get played(){ return played.slice(); },
+    /* 팡파르가 울리는 중인가 */
+    get ringing(){ return !!fan&&performance.now()<fanEnd; }
   };
 };
+
+;
+/* 꽃비: 승리 화면 위로 꽃잎을 약 10초 동안 내린다. 그림 파일 없이 작은 픽셀 무늬를 캔버스에 찍는다.
+   캔버스는 클릭·터치를 받지 않아(pointer-events:none) 결과 카드의 버튼을 가리지 않는다.
+   동현전·동현워·동현삼·동현항의 이 파일은 같다.
+   결과 카드 자리(hole)는 비워 두어 글자를 가리지 않는다. 꽃잎이 카드 뒤로 지나가는 것처럼 보인다.
+   DHPETALS.start(자리, {dur:초, delay:초, still:참이면 멈춘 꽃잎, hole:비울 네모 [x,y,w,h]를 돌려주는 함수, alive:거짓을 돌려주면 걷는다, cut:걷힐 때 부를 함수}) · DHPETALS.stop() */
+var DHPETALS=(function(){
+  'use strict';
+  /* 꽃잎 네 모습(앞 · 기운 모습 · 옆 · 반대로 기운 모습)을 돌려 가며 찍어 팔랑거리게 한다. 1 밝은 색 · 2 그늘 · 3 꽃술 */
+  var PETAL=[['.1.1.','11111','11112','.112.','..2..'],['..11.','.1112','11122','.122.','.....'],['.....','...1.','..12.','.12..','.2...'],['.11..','2111.','22111','.221.','.....']];
+  var BLOOM=[['11.11','11311','.333.','11311','22.22'],['..1..','.111.','11311','.122.','..2..']];
+  var HUES=[['#ffc4d8','#ee8fb2'],['#ffc4d8','#ee8fb2'],['#ff9fbe','#dc648e'],['#ff9fbe','#dc648e'],['#fff3f6','#f0c0d0'],['#fff3f6','#f0c0d0'],['#ffd2bd','#f0a089'],['#ff8496','#d64c66'],['#ffe48a','#e2b53c']];
+  var cv=null, g=null, raf=0, t0=0, list=[], opt=null, host=null, W=0, H=0, unit=3, ended=0;
+  function rnd(a,b){ return a+Math.random()*(b-a); }
+  function size(){ var w=host.clientWidth, h=host.clientHeight, d=Math.min(2,window.devicePixelRatio||1);
+    if(w===W&&h===H&&cv.width===Math.round(w*d)) return; W=w; H=h; cv.width=Math.round(w*d); cv.height=Math.round(h*d); g.setTransform(d,0,0,d,0,0); g.imageSmoothingEnabled=false;
+    unit=Math.max(2,Math.min(4,Math.round(w/210))); }
+  function seed(){ var n=Math.max(70,Math.min(260,Math.round(W*H/2600))), span=Math.max(1,opt.dur-4.4); list=[];
+    for(var i=0;i<n;i++){ var first=i<n*0.22, bloom=Math.random()<0.14, s=Math.max(2,unit+(Math.random()<0.25?-1:Math.random()<0.2?1:0));
+      list.push({ born:first?rnd(0,0.5):rnd(0.3,span), x:rnd(-0.08,1.04), y0:first?rnd(-0.05,0.55):rnd(-0.12,-0.03), fall:rnd(3.3,5.4)*(unit+1)/(s+1), sway:rnd(8,26), rate:rnd(0.9,1.9), ph:rnd(0,6.28),
+        wind:rnd(4,22), spin:rnd(3,6.5), f0:Math.floor(rnd(0,4)), s:s, bloom:bloom, hue:HUES[Math.floor(Math.random()*HUES.length)] }); } }
+  function stamp(rows,x,y,s,hue){ for(var r=0;r<rows.length;r++){ var row=rows[r]; for(var c=0;c<row.length;c++){ var ch=row.charCodeAt(c); if(ch===46) continue;
+    g.fillStyle=ch===49?hue[0]:ch===50?hue[1]:'#ffd23f'; g.fillRect(x+c*s,y+r*s,s,s); } } }
+  function draw(t){ size(); g.clearRect(0,0,W,H); var shown=0, hole=opt.hole?opt.hole():null;
+    g.save(); if(hole){ g.beginPath(); g.rect(0,0,W,H); g.rect(hole[0],hole[1],hole[2],hole[3]); g.clip('evenodd'); }
+    for(var i=0;i<list.length;i++){ var p=list[i], a=opt.still?p.fall*(0.08+0.8*((i*0.618)%1)):t-p.born; if(a<0) continue;
+      var y=p.y0*H+a/p.fall*H*1.12; if(y>H+8) continue;
+      var x=p.x*W+Math.sin(p.ph+a*p.rate)*p.sway+p.wind*a, set=p.bloom?BLOOM:PETAL, f=(p.f0+Math.floor(a*p.spin))%set.length;
+      stamp(set[f],Math.round(x),Math.round(y),p.s,p.hue); shown++; }
+    g.restore(); return shown; }
+  function frame(now){ raf=0; if(!cv) return;
+    if(opt.alive&&!opt.alive()){ var cut=opt.cut; stop(); if(cut) cut(); return; }
+    var t=(now-t0)/1000-opt.delay;
+    if(t>=0){ var left=opt.dur-t; cv.style.opacity=left<0.9?String(Math.max(0,left/0.9)):'1'; var n=draw(t); if(t>opt.dur||(!opt.still&&t>1&&n===0)){ ended++; stop(); return; } }
+    raf=requestAnimationFrame(frame); }
+  function stop(){ if(raf) cancelAnimationFrame(raf); raf=0; if(cv&&cv.parentNode) cv.parentNode.removeChild(cv); cv=null; g=null; list=[]; host=null; opt=null; W=H=0; }
+  return {
+    start:function(el,o){ stop(); if(!el||!document.createElement('canvas').getContext) return false; o=o||{};
+      opt={dur:o.dur>0?o.dur:10.4, delay:o.delay>0?o.delay:0, still:!!o.still, hole:o.hole||null, alive:o.alive||null, cut:o.cut||null}; host=el;
+      cv=document.createElement('canvas'); cv.className='dh-petals'; cv.setAttribute('aria-hidden','true');
+      cv.style.cssText='position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:6;image-rendering:pixelated';
+      g=cv.getContext('2d'); el.appendChild(cv); size(); seed(); t0=performance.now(); raf=requestAnimationFrame(frame); return true; },
+    stop:stop,
+    get on(){ return !!cv; },
+    /* 시험용: 지금 그리고 있는 꽃잎 수, 끝까지 내리고 걷힌 횟수 */
+    get count(){ return cv&&opt?list.filter(function(p){ var a=opt.still?1:(performance.now()-t0)/1000-opt.delay-p.born; return a>=0&&p.y0*H+a/p.fall*H*1.12<=H+8; }).length:0; },
+    get ended(){ return ended; }
+  };
+})();
 
 ;
 /* 게임패드 — 블루투스·USB 패드를 브라우저 Gamepad API로 읽는다(동현랭 시리즈 공통).
@@ -2394,11 +2483,14 @@ async function beginTurn(){
   if(finishCheck()) return;
   if(p===2) runCPU(); else { mode='idle'; hud(); }
 }
+/* 승리 축하: 팡파르(약 10초)와 꽃비. 결과 카드가 닫히거나 다른 판이 열리면 함께 멈춘다. 소리를 꺼 두어도 꽃비는 내린다. 꽃잎은 결과 카드 자리를 비켜 간다.
+   `?motion=reduce`로 열면 꽃잎이 떨어지지 않고 멈춘 채로 보인다 */
+function fete(){ const s=S; SND.play('pomp'); DHPETALS.start($('.board-stage'),{dur:10.4,still:reduced,hole:()=>{ const c=$('#result-card>div'); if(!c) return null; const a=c.getBoundingClientRect(), b=$('.board-stage').getBoundingClientRect(); return [a.left-b.left,a.top-b.top,a.width,a.height]; },alive:()=>S===s&&!$('#result-card').hidden,cut:()=>SND.stop()}); }
 function finishCheck(){
   if(!S||!S.winner) return false;
   processEvents(); mode='over'; closeMenu(); hud();
   const win=S.winner===1, P=S.players;
-  if(sndOver!==S){ sndOver=S; SND.play(win?'win':'lose'); }
+  if(sndOver!==S){ sndOver=S; if(win) fete(); else SND.play('lose'); }
   const card=$('#result-card');
   card.innerHTML=`<div><h3>${win?'승리':'패배'}</h3><p>${S.day}일째 · ${esc(S.reason)}${win?' · 붉은 진영이 이겼다.':' · 푸른 진영이 이겼다.'}</p>
   <dl><dt></dt><dt>나</dt><dt>${AI_H}</dt><dt>만든 유닛</dt><dd>${P[1].built}</dd><dd>${P[2].built}</dd><dt>무찌른 유닛</dt><dd>${P[1].kills}</dd><dd>${P[2].kills}</dd><dt>개종시킨 유닛</dt><dd>${P[1].converted}</dd><dd>${P[2].converted}</dd><dt>잃은 유닛</dt><dd>${P[1].lost}</dd><dd>${P[2].lost}</dd><dt>건물</dt><dd>${E.buildingsOf(S,1)}</dd><dd>${E.buildingsOf(S,2)}</dd></dl>
@@ -2749,7 +2841,7 @@ canvas.addEventListener('click',e=>{
 window.render_game_to_text=()=>JSON.stringify(S?{mode,day:S.day,turn:S.turn,winner:S.winner,cursor:ui.cursor,menu:menu?menu.items.map(i=>i.label):null,menuIndex:menu?menu.i:null,
   food:[S.players[1].food,S.players[2].food],gold:[S.players[1].gold,S.players[2].gold],cap:[E.unitCap(S,1),E.unitCap(S,2)],
   units:S.units.map(u=>({id:u.id,t:u.type,o:u.owner,x:u.x,y:u.y,hp:u.hp,done:u.done}))}:{mode:'setup',cfg});
-window.__dongHyunWar={get state(){return S;},key,get mode(){return mode;}};
+window.__dongHyunWar={get state(){return S;},key,get mode(){return mode;},get sounds(){return SND.played;},get ringing(){return SND.ringing;}};
 sortieCard(cfg); preview(cfg); renderSlotList(); autoPreview(true);
 /* ---------- 전체 화면(동현둠과 같은 규칙) ---------- */
 const stageFull=$('#stage-full');
