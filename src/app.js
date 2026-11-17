@@ -4,7 +4,9 @@ const HINT0='<span><kbd>X</kbd>확인</span><span><kbd>Z</kbd>취소</span><span
 const HINT_CPU='<span><kbd>Z</kbd><kbd>X</kbd>빨리 감기</span>'; // 동현AI™ 차례: Z나 X를 누르면 그 차례가 끝날 때까지 빨리 감기
 const $=s=>document.querySelector(s), E=window.Engine, AI=window.AI, R=window.Render;
 const canvas=$('#board'), g=canvas.getContext('2d');
-const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* 유닛의 이동·전투·차례 알림의 빠르기는 게임의 내용이므로 운영체제의 ‘동작 줄이기’(윈도우 ‘애니메이션 효과’ 끔 등)를 따라 짧아지지 않는다.
+   동작을 줄여 보려면 주소 끝에 ?motion=reduce 를 붙인다. */
+const reduced=new URLSearchParams(location.search).get('motion')==='reduce';
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 // 상대(동현AI™)의 이름. 글자로 넣는 곳은 AI_T, HTML로 그리는 곳은 AI_H(TM 위첨자)
 const AI_T='동현AI™', AI_H='동현AI<sup class="tm">TM</sup>';
