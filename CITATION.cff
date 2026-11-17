@@ -5,6 +5,10 @@ type: software
 version: "0.42"
 date-released: "2026-11-17"
 doi: "10.5281/zenodo.23793857"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24313810"
+    description: "Archived snapshot of version 0.42 on Zenodo"
 authors:
   - family-names: Kim
     given-names: Dong Hyun
