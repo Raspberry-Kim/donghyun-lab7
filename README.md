@@ -1,4 +1,4 @@
-# 동현워 v0.40
+# 동현워 v0.41
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23793857.svg)](https://doi.org/10.5281/zenodo.23793857)
 
@@ -69,6 +69,8 @@ node build.cjs   # dist/index.html과 루트 index.html(GitHub Pages용) 단일 
 ## 그림 검사
 
 `node qa/design.cjs`로 지도 12개와 일반 27병종·영웅 5명의 양 진영·행동 완료 그림을 확인한다. 생산·이동·전투·저장·불러오기·전체 화면과 휴대폰 화면도 검사하며, 비교 화면과 결과는 `qa/design-output/`에 남긴다. Playwright와 Chromium이 필요하다.
+
+`node qa/windows-motion.cjs`로 윈도우 크롬·엣지에서 운영체제의 ‘동작 줄이기’가 켜져 있어도 차례 알림·이동·전투의 빠르기가 통상과 같은지 확인한다. 주소 끝에 `?motion=reduce`를 붙인 때에만 짧아진다.
 
 ## 라이선스
 
