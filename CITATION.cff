@@ -2,13 +2,9 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata below."
 title: "Donghyunwar (동현워): a single-player medieval turn-based tactics laboratory against the computer, set up through the esoteric language Donghyun-lang"
 type: software
-version: "0.42"
-date-released: "2026-11-17"
+version: "0.43"
+date-released: "2026-11-23"
 doi: "10.5281/zenodo.23793857"
-identifiers:
-  - type: doi
-    value: "10.5281/zenodo.24313810"
-    description: "Archived snapshot of version 0.42 on Zenodo"
 authors:
   - family-names: Kim
     given-names: Dong Hyun
